@@ -1,0 +1,16 @@
+services:
+  debian:
+    build:
+      context: docker
+      dockerfile: Dockerfile.debian
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.3.10}
+    volumes:
+      - ./ext:/usr/src/myapp
+    environment:
+      TEST_PHP_ARGS: "-q"
+  collector:
+    image: otel/opentelemetry-collector-contrib
+    command: [ "--config=/etc/otel-collector-config.yml" ]
+    volumes:
+      - ./collector/otel-collector-config.yml:/etc/otel-collector-config.yml
