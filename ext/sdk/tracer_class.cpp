@@ -7,7 +7,7 @@ extern "C" {
 #include <Zend/zend_interfaces.h>
 #include "tracer_class.h"
 #include "span_builder_class.h"
-#include "tracer_manager.h"
+#include "sdk_manager.h"
 #include "../opentelemetry_sdk_arginfo.h"
 
 static zend_object_handlers tracer_object_handlers;

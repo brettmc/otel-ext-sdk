@@ -5,7 +5,7 @@ extern "C" {
 #include "php.h"
 #include <Zend/zend_exceptions.h>
 #include "span_class.h"
-#include "tracer_manager.h"
+#include "sdk_manager.h"
 #include "span_builder_class.h"
 #include "../opentelemetry_sdk_arginfo.h"
 

@@ -7,7 +7,7 @@ extern "C" {
 
 #include <Zend/zend_exceptions.h>
 
-#include "tracer_manager.h"
+#include "sdk_manager.h"
 
 static zend_object_handlers span_object_handlers;
 zend_class_entry *span_ce;
