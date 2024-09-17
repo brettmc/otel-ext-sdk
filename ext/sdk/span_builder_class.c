@@ -135,12 +135,6 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_SpanBuilder, startSpan)
     span_intern->cpp_span = cpp_span;
 }
 
-PHP_METHOD(OpenTelemetry_SDK_Trace_SpanBuilder, test)
-{
-    php_span_builder_object *intern = Z_SPAN_BUILDER_OBJ_P(getThis());
-    //php_printf("SpanBuilder::test (%s) (%d)\n", intern->span_name, intern->span_kind);
-}
-
 // Object handlers for SpanBuilder
 void span_builder_free_obj(zend_object *object)
 {

@@ -20,6 +20,8 @@ trace_sdk_SpanBuilder *tracer_create_span_builder(trace_sdk_Tracer *tracer, cons
 // Span
 void span_destroy(trace_sdk_Span *span);
 void span_end_span(trace_sdk_Span *span);
+void span_update_name(trace_sdk_Span *span, char *name);
+void span_set_status(trace_sdk_Span *span, char *status, char *description);
 
 // SpanBuilder
 void span_builder_destroy(trace_sdk_SpanBuilder *span_builder);

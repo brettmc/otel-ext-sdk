@@ -44,6 +44,14 @@ void span_destroy(trace_sdk_Span *span) {
 void span_end_span(trace_sdk_Span *span) {
     reinterpret_cast<trace_sdk::Span*>(span)->End();
 }
+
+void span_update_name(trace_sdk_Span *span, char *name) {
+    reinterpret_cast<trace_sdk::Span*>(span)->UpdateName(name);
+}
+
+void span_set_status(trace_sdk_Span *span, char *status, char *description) {
+    reinterpret_cast<trace_sdk::Span*>(span)->SetStatus(status, description);
+}
 // end Span
 
 // SpanBuilder

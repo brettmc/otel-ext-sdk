@@ -21,9 +21,26 @@ interface SpanContextInterface
     public function isSampled(): bool;
 }
 
-class Span
+interface SpanInterface
 {
-    public function end(): void {}
+    public function updateName(string $name): SpanInterface;
+    public function setStatus(string $code, ?string $description = null): SpanInterface;
+    public function end(?int $endTimestamp = null): void;
+    //public function recordException(Throwable $exception, iterable $attributes = []): SpanInterface;
+    //public function addEvent(string $name, iterable $attributes = [], ?int $timestamp = null): SpanInterface;
+    //public function addLink(SpanContextInterface $context, iterable $attributes = []): SpanInterface;
+    //public function setAttributes(iterable $attributes): SpanInterface;
+    //public function setAttribute(string $key, bool|int|float|string|array|null $value): SpanInterface;
+    //public function isRecording(): bool;
+    //public function getContext(): SpanContextInterface;
+}
+
+class Span implements SpanInterface
+{
+    public function updateName(string $name): SpanInterface {}
+    public function setStatus(string $code, ?string $description = null): SpanInterface {}
+    public function end(?int $endTimestamp = null): void {}
+    //public function addLink(SpanContextInterface $context, iterable $attribute = []): SpanInterface
     //public function activate(): Scope {}
 }
 
