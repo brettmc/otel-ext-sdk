@@ -21,12 +21,10 @@ namespace trace_sdk {
         cpp_span->SetStatus(_GetStatusCode(status), description);
     }
 
-    opentelemetry::v1::nostd::unique_ptr<opentelemetry::v1::context::Token> Span::Activate() {
+    opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> Span::Activate() {
         php_printf("(c++)Span::Activate\n");
-        //opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> scope(new opentelemetry::v1::trace::Scope(cpp_span));
-        //return scope;
-
-        return opentelemetry::context::RuntimeContext::Attach(cpp_span->GetContext());
+        opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> scope(new opentelemetry::v1::trace::Scope(cpp_span));
+        return scope;
     }
 
     void Span::End() {
