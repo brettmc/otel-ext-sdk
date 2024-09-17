@@ -1,7 +1,3 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "php.h"
 #include <Zend/zend_exceptions.h>
 #include "span_class.h"
@@ -179,7 +175,3 @@ void register_span_builder_class() {
     span_builder_object_handlers.offset = XtOffsetOf(php_span_builder_object, std);
     span_builder_object_handlers.free_obj = span_builder_free_obj;
 }
-
-#ifdef __cplusplus
-}
-#endif

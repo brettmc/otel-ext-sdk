@@ -47,7 +47,7 @@ if test "$PHP_OPENTELEMETRY_SDK" != "no"; then
   OSTREAM_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/exporters/ostream/src -name '*.cc' | sed "s|^$srcdir/||"`
   dnl OTLP_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/exporters/otlp/src -name '*.cc' | sed "s|^$srcdir/||" | grep -v grpc`
   dnl PROTO_SOURCES=`find $srcdir/third_party/proto -name '*.cc' | sed "s|^$srcdir/||"`
-  OTEL_SDK_SOURCES=`find $srcdir/sdk -name '*.cpp' | sed "s|^$srcdir/||"`
+  OTEL_SDK_SOURCES=`find $srcdir/sdk -name '*.c*' | sed "s|^$srcdir/||"`
 
   PHP_ADD_INCLUDE([third_party/json/single_include])
   PHP_ADD_INCLUDE([third_party/proto])

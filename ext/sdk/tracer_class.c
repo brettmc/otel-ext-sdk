@@ -1,7 +1,3 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "php.h"
 #include <Zend/zend_exceptions.h>
 #include <Zend/zend_interfaces.h>
@@ -85,7 +81,3 @@ void register_tracer_class() {
     memcpy(&tracer_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     tracer_object_handlers.free_obj = tracer_free_obj;
 }
-
-#ifdef __cplusplus
-}
-#endif
