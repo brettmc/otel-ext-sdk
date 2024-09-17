@@ -36,14 +36,6 @@ void tracer_free_obj(zend_object *object)
     zend_object_std_dtor(&intern->std);
 }
 
-PHP_METHOD(OpenTelemetry_SDK_Trace_Tracer, __construct) {
-    //php_printf("(php)Tracer::__construct\n");
-    php_tracer_object *intern;
-    intern = (php_tracer_object *) Z_OBJ_P(ZEND_THIS);
-
-    intern->cpp_tracer = tracer_create();
-}
-
 PHP_METHOD(OpenTelemetry_SDK_Trace_Tracer, spanBuilder) {
     char *span_name;
     size_t span_name_len;
@@ -65,13 +57,6 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Tracer, spanBuilder) {
 
     php_span_builder_object *intern = Z_SPAN_BUILDER_OBJ_P(return_value);
     intern->cpp_span_builder = cpp_span_builder;
-}
-
-PHP_METHOD(OpenTelemetry_SDK_Trace_Tracer, doSomething) {
-    //php_printf("(php)Tracer::doSomething\n");
-    php_tracer_object *intern;
-    intern = (php_tracer_object *) Z_OBJ_P(ZEND_THIS);
-    tracer_do_something(intern->cpp_tracer);
 }
 
 void register_tracer_class() {

@@ -29,7 +29,6 @@ class Span
 
 class SpanBuilder
 {
-    public function test(): void {}
     public function setAttribute(string $key, mixed $value): SpanBuilder {}
     public function setAttributes(iterable $attributes): SpanBuilder {}
     public function setSpanKind(int $spanKind): SpanBuilder {}
@@ -42,13 +41,11 @@ class SpanBuilder
 class Tracer
 {
     public function spanBuilder(string $spanName): SpanBuilder {}
-    public function doSomething(): void {}
 }
 
 class TracerProvider
 {
     public function __construct() {}
     public function __destruct() {}
-    public function doSomething(): void {}
     public function getTracer(string $name): Tracer {}
 }

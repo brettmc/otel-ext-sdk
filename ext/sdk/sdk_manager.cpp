@@ -7,6 +7,15 @@
 #include <Zend/zend_exceptions.h>
 #include <opentelemetry/common/key_value_iterable_view.h>
 
+/**
+ * This file manages the interface between PHP/C code (in .c files) and C++ classes which
+ * interact with the opentelemetry-cpp SDK.
+ *
+ * The key to the interfacing lies in how C files use an opaque pointer to the C++ class,
+ * but never use it except through this manager. The pointer is cast between opaque and
+ * real via reinterpret_cast, for example trace_sdk::Tracer (C++) <--> trace_sdk_Tracer (C)
+ */
+
 extern "C" {
 
 // Tracer
@@ -27,14 +36,15 @@ void tracer_do_something(trace_sdk_Tracer *tracer) {
 }
 // end Tracer
 
+// Span
 void span_destroy(trace_sdk_Span *span) {
     delete reinterpret_cast<trace_sdk::Span*>(span);
 }
 
-//todo: span_end_span?
-void tracer_end_span(trace_sdk_Span *span) {
+void span_end_span(trace_sdk_Span *span) {
     reinterpret_cast<trace_sdk::Span*>(span)->End();
 }
+// end Span
 
 // SpanBuilder
 void span_builder_destroy(trace_sdk_SpanBuilder *span_builder) {

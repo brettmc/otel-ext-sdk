@@ -12,7 +12,6 @@ $builder = $tracer->spanBuilder("test-span");
 var_dump($builder);
 $builder
     ->setSpanKind(1);
-$builder->test();
 $span = $builder->startSpan();
 var_dump($span);
 $span->end();

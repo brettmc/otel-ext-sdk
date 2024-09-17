@@ -16,7 +16,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Span, end)
         return;
     }
 
-    tracer_end_span(intern->cpp_span);
+    span_end_span(intern->cpp_span);
 }
 
 // Free the C++ Span when the PHP object is destroyed

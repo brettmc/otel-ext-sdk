@@ -6,26 +6,23 @@
 extern "C" {
 #endif
 
-// Opaque type for C++ objects
+// Opaque types for C++ objects
 typedef struct trace_sdk_TracerProvider trace_sdk_TracerProvider;
 typedef struct trace_sdk_Tracer trace_sdk_Tracer;
 typedef struct trace_sdk_Span trace_sdk_Span;
 typedef struct trace_sdk_SpanBuilder trace_sdk_SpanBuilder;
 
-// Function to create a Tracer object
-trace_sdk_Tracer *tracer_create();
-
 // Tracer
 void tracer_destroy(trace_sdk_Tracer *tracer);
 void tracer_do_something(trace_sdk_Tracer *tracer);
-void tracer_end_span(trace_sdk_Span *span);
 trace_sdk_SpanBuilder *tracer_create_span_builder(trace_sdk_Tracer *tracer, const char *span_name);
 
 // Span
 void span_destroy(trace_sdk_Span *span);
-void span_builder_destroy(trace_sdk_SpanBuilder *span_builder);
+void span_end_span(trace_sdk_Span *span);
 
 // SpanBuilder
+void span_builder_destroy(trace_sdk_SpanBuilder *span_builder);
 void span_builder_add_attribute(trace_sdk_SpanBuilder *span_builder, const char *key, zval *value);
 void span_builder_set_span_kind(trace_sdk_SpanBuilder *span_builder, int span_kind);
 void span_builder_set_start_timestamp(trace_sdk_SpanBuilder *span_builder, int timestamp);
