@@ -12,6 +12,7 @@
 #include "sdk/tracer_class.h"
 #include "sdk/span_class.h"
 #include "sdk/span_builder_class.h"
+#include <opentelemetry/version.h>
 
 /* For compatibility with older PHP versions */
 #ifndef ZEND_PARSE_PARAMETERS_NONE
@@ -19,33 +20,6 @@
 	ZEND_PARSE_PARAMETERS_START(0, 0) \
 	ZEND_PARSE_PARAMETERS_END()
 #endif
-
-/* {{{ void test1() */
-PHP_FUNCTION(test1)
-{
-	ZEND_PARSE_PARAMETERS_NONE();
-
-	php_printf("The extension %s is loaded and working!\r\n", "opentelemetry_sdk");
-}
-/* }}} */
-
-/* {{{ string test2( [ string $var ] ) */
-PHP_FUNCTION(test2)
-{
-	char *var = "World";
-	size_t var_len = sizeof("World") - 1;
-	zend_string *retval;
-
-	ZEND_PARSE_PARAMETERS_START(0, 1)
-		Z_PARAM_OPTIONAL
-		Z_PARAM_STRING(var, var_len)
-	ZEND_PARSE_PARAMETERS_END();
-
-	retval = strpprintf(0, "Hello %s", var);
-
-	RETURN_STR(retval);
-}
-/* }}}*/
 
 PHP_INI_BEGIN()
 PHP_INI_END()
@@ -84,6 +58,7 @@ PHP_MINFO_FUNCTION(opentelemetry_sdk)
 	php_info_print_table_start();
 	php_info_print_table_row(2, "opentelemetry_sdk support", "enabled");
     php_info_print_table_row(2, "extension version", PHP_OPENTELEMETRY_SDK_VERSION);
+    php_info_print_table_row(2, "opentelemetry-cpp version", OPENTELEMETRY_VERSION);
 	php_info_print_table_end();
 }
 /* }}} */
