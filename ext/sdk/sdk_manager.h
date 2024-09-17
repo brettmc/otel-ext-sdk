@@ -11,6 +11,7 @@ typedef struct trace_sdk_TracerProvider trace_sdk_TracerProvider;
 typedef struct trace_sdk_Tracer trace_sdk_Tracer;
 typedef struct trace_sdk_Span trace_sdk_Span;
 typedef struct trace_sdk_SpanBuilder trace_sdk_SpanBuilder;
+typedef struct trace_sdk_Scope trace_sdk_Scope;
 
 // Tracer
 void tracer_destroy(trace_sdk_Tracer *tracer);
@@ -22,6 +23,10 @@ void span_destroy(trace_sdk_Span *span);
 void span_end_span(trace_sdk_Span *span);
 void span_update_name(trace_sdk_Span *span, char *name);
 void span_set_status(trace_sdk_Span *span, char *status, char *description);
+trace_sdk_Scope *span_activate(trace_sdk_Span *span);
+
+// Scope
+int scope_detach(trace_sdk_Scope *scope);
 
 // SpanBuilder
 void span_builder_destroy(trace_sdk_SpanBuilder *span_builder);

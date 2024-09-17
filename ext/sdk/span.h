@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "opentelemetry/sdk/trace/tracer.h"
+#include "opentelemetry/trace/scope.h"
 #include "opentelemetry/trace/span.h"
 #include "opentelemetry/trace/span_metadata.h"
 
@@ -16,6 +17,8 @@ namespace trace_sdk {
         void UpdateName(char *name);
         void SetStatus(char *status, char *description);
         void End();
+        //opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> Activate();
+        opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> Activate();
     private:
         opentelemetry::trace::StatusCode _GetStatusCode(char *status);
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> cpp_span;

@@ -15,12 +15,16 @@ namespace trace_sdk {
     }
 
     void Span::UpdateName(char *name) {
-        //virtual void UpdateName(nostd::string_view name)
         cpp_span->UpdateName(name);
     }
     void Span::SetStatus(char *status, char *description) {
         cpp_span->SetStatus(_GetStatusCode(status), description);
-        //virtual void SetStatus(StatusCode code, nostd::string_view description = "")
+    }
+
+    opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> Span::Activate() {
+        php_printf("(c++)Span::Activate\n");
+        opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> scope(new opentelemetry::v1::trace::Scope(cpp_span));
+        return scope;
     }
 
     void Span::End() {

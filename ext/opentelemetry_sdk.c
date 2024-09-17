@@ -11,6 +11,7 @@
 #include "sdk/tracer_provider_class.h"
 #include "sdk/tracer_class.h"
 #include "sdk/span_class.h"
+#include "sdk/scope_class.h"
 #include "sdk/span_builder_class.h"
 #include <opentelemetry/version.h>
 
@@ -37,6 +38,7 @@ PHP_RINIT_FUNCTION(opentelemetry_sdk)
 
 PHP_MINIT_FUNCTION(opentelemetry_sdk) {
     REGISTER_INI_ENTRIES();
+    register_scope_class();
     register_span_class();
     register_span_builder_class();
     register_tracer_provider_class();

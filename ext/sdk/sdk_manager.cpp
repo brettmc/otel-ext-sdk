@@ -3,6 +3,7 @@
 #include "tracer_provider.h"
 #include "span_builder.h"
 #include "span.h"
+#include "scope.h"
 #include "php.h"
 #include <Zend/zend_exceptions.h>
 #include <opentelemetry/common/key_value_iterable_view.h>
@@ -52,7 +53,20 @@ void span_update_name(trace_sdk_Span *span, char *name) {
 void span_set_status(trace_sdk_Span *span, char *status, char *description) {
     reinterpret_cast<trace_sdk::Span*>(span)->SetStatus(status, description);
 }
+
+trace_sdk_Scope *span_activate(trace_sdk_Span *span) {
+    auto cpp_scope = reinterpret_cast<trace_sdk::Span*>(span)->Activate();
+    auto scope_wrapper = new trace_sdk::Scope(cpp_scope);
+    return reinterpret_cast<trace_sdk_Scope*>(scope_wrapper);
+}
 // end Span
+
+// Scope
+int scope_detach(trace_sdk_Scope *scope) {
+    reinterpret_cast<trace_sdk::Scope*>(scope)->Detach();
+    return 0;
+}
+// end Scope
 
 // SpanBuilder
 void span_builder_destroy(trace_sdk_SpanBuilder *span_builder) {

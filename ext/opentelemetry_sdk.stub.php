@@ -7,10 +7,15 @@
 
 namespace OpenTelemetry\SDK\Trace;
 
-/*class Scope
+interface ScopeInterface
 {
-    public function detach(): void {}
-}*/
+    public function detach(): int;
+}
+
+class Scope implements ScopeInterface
+{
+    public function detach(): int {}
+}
 
 interface SpanContextInterface
 {
@@ -23,6 +28,8 @@ interface SpanContextInterface
 
 interface SpanInterface
 {
+    public function activate(): ScopeInterface;
+    //public function storeInContext(ContextInterface $context): ContextInterface;
     public function updateName(string $name): SpanInterface;
     public function setStatus(string $code, ?string $description = null): SpanInterface;
     public function end(?int $endTimestamp = null): void;
@@ -41,7 +48,7 @@ class Span implements SpanInterface
     public function setStatus(string $code, ?string $description = null): SpanInterface {}
     public function end(?int $endTimestamp = null): void {}
     //public function addLink(SpanContextInterface $context, iterable $attribute = []): SpanInterface
-    //public function activate(): Scope {}
+    public function activate(): ScopeInterface {}
 }
 
 class SpanBuilder
