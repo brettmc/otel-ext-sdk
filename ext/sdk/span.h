@@ -10,7 +10,7 @@
 namespace trace_sdk {
     class Span {
     public:
-        Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> span);
+        Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> span, opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> tracer);
         ~Span(); // Destructor
 
         void DoSomething();  // Placeholder function
@@ -18,10 +18,11 @@ namespace trace_sdk {
         void SetStatus(char *status, char *description);
         void End();
         //opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> Activate();
-        opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> Activate();
+        std::unique_ptr<opentelemetry::v1::trace::Scope> Activate();
     private:
         opentelemetry::trace::StatusCode _GetStatusCode(char *status);
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> cpp_span;
+        opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> cpp_tracer;
     };
 }
 

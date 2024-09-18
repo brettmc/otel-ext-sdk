@@ -14,6 +14,7 @@ namespace trace_sdk {
         void SetSpanKind(int kind);
         void AddAttribute(const std::string &key, const opentelemetry::common::AttributeValue &value);
         void SetStartTimestamp(int timestamp);
+        opentelemetry::v1::nostd::shared_ptr <opentelemetry::trace::Tracer> GetTracer();
 
     private:
         opentelemetry::v1::nostd::shared_ptr <opentelemetry::trace::Tracer> cpp_tracer;

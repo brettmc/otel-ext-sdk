@@ -9,14 +9,15 @@ namespace trace_sdk
 {
     class Scope
     {
-    private:
-        bool detached;
-        opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> scope;
-
     public:
-        Scope(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope>);
+        explicit Scope(std::unique_ptr<opentelemetry::v1::trace::Scope>);
         ~Scope();
-        int Detach();
+        void Detach();
+        void Test();
+
+    private:
+        std::unique_ptr<opentelemetry::v1::trace::Scope> scope;
+        bool detached = false;
     };
 } // namespace trace_sdk
 

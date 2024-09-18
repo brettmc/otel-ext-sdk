@@ -18,10 +18,11 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Scope, detach)
 // Free the C++ Scope when the PHP object is destroyed
 void scope_free_obj(zend_object *object)
 {
+    //php_printf("(php)scope_free_obj\n");
     php_scope_object *intern = (php_scope_object *)((char *)(object) - XtOffsetOf(php_scope_object, std));
 
     if (intern->cpp_scope) {
-        //scope_destroy(intern->cpp_scope);
+        scope_destroy(intern->cpp_scope);
         intern->cpp_scope = NULL;
     }
 

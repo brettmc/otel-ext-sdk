@@ -2,7 +2,7 @@
 #include "php.h"
 
 namespace trace_sdk {
-    Span::Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> span) : cpp_span(span) {
+    Span::Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> span, opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> tracer) : cpp_span(span), cpp_tracer(tracer) {
         //php_printf("(c++)Span created (with cpp span): %p\n", cpp_span);
     }
 
@@ -21,9 +21,9 @@ namespace trace_sdk {
         cpp_span->SetStatus(_GetStatusCode(status), description);
     }
 
-    opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> Span::Activate() {
-        php_printf("(c++)Span::Activate\n");
-        opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> scope(new opentelemetry::v1::trace::Scope(cpp_span));
+    std::unique_ptr<opentelemetry::v1::trace::Scope> Span::Activate() {
+        //php_printf("(c++)Span::Activate\n");
+        std::unique_ptr<opentelemetry::v1::trace::Scope> scope = std::make_unique<opentelemetry::v1::trace::Scope>(cpp_tracer->WithActiveSpan(cpp_span));
         return scope;
     }
 

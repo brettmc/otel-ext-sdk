@@ -27,6 +27,7 @@ trace_sdk_Scope *span_activate(trace_sdk_Span *span);
 
 // Scope
 int scope_detach(trace_sdk_Scope *scope);
+void scope_destroy(trace_sdk_Scope *scope);
 
 // SpanBuilder
 void span_builder_destroy(trace_sdk_SpanBuilder *span_builder);

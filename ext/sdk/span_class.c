@@ -63,9 +63,15 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Span, setStatus)
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_Span, activate) {
-    php_span_object *intern = Z_SPAN_OBJ_P(getThis());
-    trace_sdk_Scope *cpp_scope = span_activate(intern->cpp_span);
+    php_span_object *span_intern = Z_SPAN_OBJ_P(getThis());
+    if (!span_intern->cpp_span) {
+        zend_throw_exception(NULL, "Span is not initialized.", 0);
+        RETURN_NULL();
+    }
+    trace_sdk_Scope *cpp_scope = span_activate(span_intern->cpp_span);
     object_init_ex(return_value, scope_ce);
+    php_scope_object *intern = Z_SCOPE_OBJ_P(return_value);
+    intern->cpp_scope = cpp_scope;
 }
 
 // Free the C++ Span when the PHP object is destroyed

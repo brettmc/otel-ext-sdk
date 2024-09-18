@@ -29,6 +29,10 @@ namespace trace_sdk {
         has_start_time = true;
     }
 
+    opentelemetry::v1::nostd::shared_ptr <opentelemetry::trace::Tracer> SpanBuilder::GetTracer() {
+        return cpp_tracer;
+    }
+
     void SpanBuilder::SetSpanKind(int kind)
     {
         switch (kind)
