@@ -36,18 +36,20 @@ if test "$PHP_OPENTELEMETRY_SDK" != "no"; then
     dnl the line above _should_ add linker flags...
     LDFLAGS="$LDFLAGS $CURL_LIBS"
 
-    CXXFLAGS="-std=c++11 -g"
+    CXXFLAGS="-std=c++14 -g"
     PHP_REQUIRE_CXX()
     dnl PHP_CXX_COMPILE_STDCXX(11, mandatory, OPENTELEMETRY_SDK_STDCXX)
 
   AC_DEFINE(HAVE_OPENTELEMETRY_SDK, 1, [ Have opentelemetry_sdk support ])
 
-  dnl EXT_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/ext/src/http -name '*.cc' | sed "s|^$srcdir/||"`
+  OTEL_SDK_SOURCES=`find $srcdir/sdk -name '*.c*' | sed "s|^$srcdir/||"`
+
+  EXT_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/ext/src/http -name '*.cc' | sed "s|^$srcdir/||"`
   SDK_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/sdk/src -name '*.cc' | sed "s|^$srcdir/||" | grep -v 'fork_windows.cc'`
   OSTREAM_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/exporters/ostream/src -name '*.cc' | sed "s|^$srcdir/||"`
-  dnl OTLP_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/exporters/otlp/src -name '*.cc' | sed "s|^$srcdir/||" | grep -v grpc`
-  dnl PROTO_SOURCES=`find $srcdir/third_party/proto -name '*.cc' | sed "s|^$srcdir/||"`
-  OTEL_SDK_SOURCES=`find $srcdir/sdk -name '*.c*' | sed "s|^$srcdir/||"`
+  OTLP_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/exporters/otlp/src -name '*.cc' | sed "s|^$srcdir/||" | grep -v grpc`
+  PROTO_SOURCES=`find $srcdir/third_party/proto -name '*.cc' | sed "s|^$srcdir/||"`
+  THIRD_PARTY_SOURCES="$SDK_SOURCES $OSTREAM_SOURCES $EXT_SOURCES $OTLP_SOURCES $PROTO_SOURCES"
 
   PHP_ADD_INCLUDE([third_party/json/single_include])
   PHP_ADD_INCLUDE([third_party/proto])
@@ -59,5 +61,5 @@ if test "$PHP_OPENTELEMETRY_SDK" != "no"; then
   PHP_ADD_INCLUDE([third_party/opentelemetry-cpp/ext/include])
   PHP_ADD_INCLUDE([third_party/opentelemetry-cpp/exporters/otlp/include])
 
-  PHP_NEW_EXTENSION(opentelemetry_sdk, $SDK_SOURCES $OSTREAM_SOURCES $OTEL_SDK_SOURCES opentelemetry_sdk.c, $ext_shared,, "-g -O0 -Wl,-v -Wall -Wextra -Werror -Wno-unused-parameter")
+  PHP_NEW_EXTENSION(opentelemetry_sdk, $THIRD_PARTY_SOURCES $OTEL_SDK_SOURCES opentelemetry_sdk.c, $ext_shared,, "-g -O0 -Wl,-v -Wall -Wextra -Werror -Wno-unused-parameter")
 fi

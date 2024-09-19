@@ -1,9 +1,9 @@
 #include "tracer_provider.h"
 #include "php.h"
 #include <Zend/zend_exceptions.h>
-
+#include "../php_opentelemetry_sdk.h"
 #include "opentelemetry/exporters/ostream/span_exporter_factory.h"
-//#include "opentelemetry/exporters/otlp/otlp_http_exporter.h"
+#include "opentelemetry/exporters/otlp/otlp_http_exporter.h"
 //#include "opentelemetry/exporters/otlp/otlp_http_exporter_factory.h"
 //#include "opentelemetry/exporters/otlp/otlp_http_exporter_options.h"
 #include "opentelemetry/sdk/resource/resource.h"
@@ -17,18 +17,26 @@
 
 namespace trace_sdk {
     TracerProvider::TracerProvider() {
+        //OTEL_TRACES_EXPORTER
+        std::string otel_exporter = GetEnvVar("OTEL_TRACES_EXPORTER", "none");
+        std::unique_ptr<opentelemetry::sdk::trace::SpanExporter> exporter;
+        if (otel_exporter == "otlp") {
+            exporter = std::make_unique<opentelemetry::exporter::otlp::OtlpHttpExporter>();
+        } else {
+            exporter = opentelemetry::exporter::trace::OStreamSpanExporterFactory::Create();
+        }
+
+
         //TODO use global (effectively singleton)
         //php_printf("(c++)TracerProvider construct\n");
         opentelemetry::sdk::resource::ResourceAttributes attributes = {
-                {"service.name", "my-service"},
-                {"service.namespace", "foo"},
-                {"service.instance.id", "instance-1"},
-                {"service.version", "0.0.1"},
-                {"telemetry.sdk.language", "php"}
+                {"telemetry.sdk.language", "php"},
+                {"telemetry.sdk.name", "ext-opentelemetry"},
+                {"telemetry.sdk.version", PHP_OPENTELEMETRY_SDK_VERSION}
         };
 
         auto resource = opentelemetry::sdk::resource::Resource::Create(attributes);
-        auto exporter  = opentelemetry::exporter::trace::OStreamSpanExporterFactory::Create();
+        //auto exporter  = opentelemetry::exporter::trace::OStreamSpanExporterFactory::Create();
         auto processor = opentelemetry::sdk::trace::SimpleSpanProcessorFactory::Create(std::move(exporter));
         opentelemetry::sdk::trace::BatchSpanProcessorOptions bsp_options;
         //bsp_options.schedule_delay_millis = 1000;
@@ -61,4 +69,13 @@ namespace trace_sdk {
         auto span = tracer->StartSpan("hello-from-php-cpp");
         span->End();
     }
+
+    std::string TracerProvider::GetEnvVar(const char* var_name, const std::string& default_value = "") {
+        const char* value = std::getenv(var_name); // Get the environment variable
+        if (value != nullptr) {
+                return std::string(value); // Return the value if it exists
+            }
+        return default_value; // Return the default value if not set
+    }
+
 }

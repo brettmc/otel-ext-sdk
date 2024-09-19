@@ -1,28 +1,21 @@
 --TEST--
-Get a span builder
+Add resource attributes from env
 --EXTENSIONS--
 opentelemetry_sdk
+--ENV--
+OTEL_SPAN_EXPORTER=console
+OTEL_RESOURCE_ATTRIBUTES=attr_one=foo,attr_two=99
 --FILE--
 <?php
 use OpenTelemetry\SDK\Trace\TracerProvider;
 
-$provider = new TracerProvider();
-$tracer = $provider->getTracer('test');
-$builder = $tracer->spanBuilder("test-span");
-var_dump($builder);
-$builder
-    ->setSpanKind(1);
-$span = $builder->startSpan();
-var_dump($span);
-$span->end();
+$p = new TracerProvider();
+$t = $p->getTracer('test');
+$t->spanBuilder('foo')->startSpan()->end();
 ?>
 --EXPECTF--
-object(OpenTelemetry\SDK\Trace\SpanBuilder)#%d (0) {
-}
-object(OpenTelemetry\SDK\Trace\Span)#%d (0) {
-}
 {
-  name          : test-span
+  name          : foo
   trace_id      : %s
   span_id       : %s
   tracestate    :%s
@@ -30,13 +23,15 @@ object(OpenTelemetry\SDK\Trace\Span)#%d (0) {
   start         : %d
   duration      : %d
   description   :%s
-  span kind     : Server
+  span kind     : Internal
   status        : Unset
   attributes    :%s
   events        :%s
   links         :%s
   resources     :%s
 	service.name: unknown_service
+	attr_one: foo
+	attr_two: 99
 	telemetry.sdk.version: %d.%d.%d
 	telemetry.sdk.name: ext-opentelemetry
 	telemetry.sdk.language: php

@@ -31,12 +31,9 @@ $span->end();
   events        :%s
   links         :%s
   resources     :%s
-	telemetry.sdk.version: 1.16.1
+	service.name: unknown_service
+	telemetry.sdk.version: %d.%d.%d
+	telemetry.sdk.name: ext-opentelemetry
 	telemetry.sdk.language: php
-	service.version: 0.0.1
-	telemetry.sdk.name: opentelemetry
-	service.instance.id: instance-1
-	service.namespace: foo
-	service.name: my-service
   instr-lib     : foo
 }
