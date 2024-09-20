@@ -21,7 +21,7 @@ $span->end();
 --EXPECTF--
 string(32) "%s"
 string(16) "%s"
-int(0)
+int(1)
 bool(false)
 bool(true)
-%S
+%A

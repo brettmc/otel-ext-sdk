@@ -39,9 +39,8 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_SpanContext, getTraceFlags)
         zend_throw_exception(NULL,"SpanContext is not initialized.", 0);
         return;
     }
-    //span_context_foo(intern->cpp_span_context);
 
-    RETURN_LONG(0);
+    RETURN_LONG(span_context_get_trace_flags(intern->cpp_span_context));
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_SpanContext, isRemote)
@@ -52,9 +51,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_SpanContext, isRemote)
         zend_throw_exception(NULL,"SpanContext is not initialized.", 0);
         return;
     }
-    //span_context_foo(intern->cpp_span_context);
-
-    RETURN_BOOL(false);
+    RETURN_BOOL(span_context_get_is_remote(intern->cpp_span_context));
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_SpanContext, isSampled)
@@ -65,9 +62,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_SpanContext, isSampled)
         zend_throw_exception(NULL,"SpanContext is not initialized.", 0);
         return;
     }
-    //span_context_foo(intern->cpp_span_context);
-
-    RETURN_BOOL(false);
+    RETURN_BOOL(span_context_get_is_sampled(intern->cpp_span_context));
 }
 
 // Free the C++ Span when the PHP object is destroyed

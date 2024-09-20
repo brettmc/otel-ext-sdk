@@ -25,12 +25,13 @@ namespace trace_sdk {
         return std::string(buf, sizeof(buf));
     }
     int SpanContext::GetTraceFlags() {
-        //return cpp_span_context->trace_flags;
-        return 0;
+        return cpp_span_context->trace_flags().flags();
     }
     bool SpanContext::IsSampled() {
-        //return cpp_span_context->IsSampled();
-        return true;
+        return cpp_span_context->IsSampled();
     }
-    //todo IsRemote, trace_state
+    bool SpanContext::IsRemote()
+    {
+        return cpp_span_context->IsRemote();
+    }
 }

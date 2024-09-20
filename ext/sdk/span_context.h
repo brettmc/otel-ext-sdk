@@ -14,6 +14,7 @@ namespace trace_sdk {
         std::string GetTraceId();
         std::string GetSpanId();
         int GetTraceFlags();
+        bool IsRemote();
         bool IsSampled();
     private:
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::SpanContext> cpp_span_context;

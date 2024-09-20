@@ -22,6 +22,9 @@ trace_sdk_SpanContext * span_get_context(trace_sdk_Span *span);
 // SpanContext
 char *span_context_get_trace_id(trace_sdk_SpanContext *context);
 char *span_context_get_span_id(trace_sdk_SpanContext *context);
+uint8_t span_context_get_trace_flags(trace_sdk_SpanContext *context);
+bool span_context_get_is_remote(trace_sdk_SpanContext *context);
+bool span_context_get_is_sampled(trace_sdk_SpanContext *context);
 
 // Scope
 int scope_detach(trace_sdk_Scope *scope);

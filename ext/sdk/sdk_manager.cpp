@@ -71,17 +71,27 @@ trace_sdk_SpanContext *span_get_context(trace_sdk_Span *span) {
 // end Span
 
 // SpanContext
-char *span_context_get_trace_id(trace_sdk_SpanContext *context)
-{
+char *span_context_get_trace_id(trace_sdk_SpanContext *context) {
     auto sc = reinterpret_cast<trace_sdk::SpanContext*>(context);
     std::string trace_id = sc->GetTraceId();
 
     return CreateCharPointerFromString(trace_id);
 }
-char *span_context_get_span_id(trace_sdk_SpanContext *context)
-{
+char *span_context_get_span_id(trace_sdk_SpanContext *context) {
     auto sc = reinterpret_cast<trace_sdk::SpanContext*>(context);
     return CreateCharPointerFromString(sc->GetSpanId());
+}
+uint8_t span_context_get_trace_flags(trace_sdk_SpanContext *context) {
+    auto sc = reinterpret_cast<trace_sdk::SpanContext*>(context);
+    return sc->GetTraceFlags();
+}
+bool span_context_get_is_remote(trace_sdk_SpanContext *context) {
+    auto sc = reinterpret_cast<trace_sdk::SpanContext*>(context);
+    return sc->IsRemote();
+}
+bool span_context_get_is_sampled(trace_sdk_SpanContext *context) {
+    auto sc = reinterpret_cast<trace_sdk::SpanContext*>(context);
+    return sc->IsSampled();
 }
 // SpanContext end
 
