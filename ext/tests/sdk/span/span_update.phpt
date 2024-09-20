@@ -2,6 +2,8 @@
 Update a span after it is created and before it ends
 --EXTENSIONS--
 opentelemetry_sdk
+--ENV--
+OTEL_TRACES_EXPORTER=console
 --FILE--
 <?php
 use OpenTelemetry\SDK\Trace\TracerProvider;

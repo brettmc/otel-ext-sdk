@@ -17,8 +17,14 @@
 
 namespace trace_sdk {
     TracerProvider::TracerProvider() {
-        //OTEL_TRACES_EXPORTER
-        std::string otel_exporter = GetEnvVar("OTEL_TRACES_EXPORTER", "none");
+        if (noop_tracer_provider == nullptr) {
+            noop_tracer_provider = opentelemetry::trace::Provider::GetTracerProvider();
+            //noop_tracer_provider = std::make_shared<opentelemetry::v1::trace::TracerProvider>(p);
+        }
+        std::string otel_exporter = GetEnvVar("OTEL_TRACES_EXPORTER", "otlp");
+        if (otel_exporter == "none") {
+            return;
+        }
         std::unique_ptr<opentelemetry::sdk::trace::SpanExporter> exporter;
         if (otel_exporter == "otlp") {
             exporter = std::make_unique<opentelemetry::exporter::otlp::OtlpHttpExporter>();
@@ -48,7 +54,9 @@ namespace trace_sdk {
     TracerProvider::~TracerProvider() {
         // Destructor logic
         //php_printf("(c++)TracerProvider destructor\n");
-        cpp_tracer_provider->Shutdown();
+        if (cpp_tracer_provider) {
+            cpp_tracer_provider->Shutdown();
+        }
         // No need to manually delete cpp_tracer_provider.
         // std::shared_ptr will automatically handle the cleanup.
     }
@@ -56,7 +64,11 @@ namespace trace_sdk {
     opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> TracerProvider::GetTracer() {
         //php_printf("(c++)Getting a Tracer from TracerProvider...\n");
         //return std::make_shared<Tracer>();
-        return cpp_tracer_provider->GetTracer("foo");
+        if (cpp_tracer_provider) {
+            return cpp_tracer_provider->GetTracer("foo");
+        } else {
+            return noop_tracer_provider->GetTracer("foo");
+        }
     }
 
     void TracerProvider::DoSomething() {

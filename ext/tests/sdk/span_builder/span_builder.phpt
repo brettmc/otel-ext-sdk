@@ -2,6 +2,8 @@
 Get a span builder
 --EXTENSIONS--
 opentelemetry_sdk
+--ENV--
+OTEL_TRACES_EXPORTER=console
 --FILE--
 <?php
 use OpenTelemetry\SDK\Trace\TracerProvider;

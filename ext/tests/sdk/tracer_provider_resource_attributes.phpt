@@ -3,7 +3,7 @@ Add resource attributes from env
 --EXTENSIONS--
 opentelemetry_sdk
 --ENV--
-OTEL_SPAN_EXPORTER=console
+OTEL_TRACES_EXPORTER=console
 OTEL_RESOURCE_ATTRIBUTES=attr_one=foo,attr_two=99
 --FILE--
 <?php
