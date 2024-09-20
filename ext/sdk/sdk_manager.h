@@ -1,17 +1,10 @@
 #ifndef OPENTELEMETRY_SDK_MANAGER_H
 #define OPENTELEMETRY_SDK_MANAGER_H
 #include "php.h"
-
+#include "opaque_types.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-// Opaque types for C++ objects
-typedef struct trace_sdk_TracerProvider trace_sdk_TracerProvider;
-typedef struct trace_sdk_Tracer trace_sdk_Tracer;
-typedef struct trace_sdk_Span trace_sdk_Span;
-typedef struct trace_sdk_SpanBuilder trace_sdk_SpanBuilder;
-typedef struct trace_sdk_Scope trace_sdk_Scope;
 
 // Tracer
 void tracer_destroy(trace_sdk_Tracer *tracer);
@@ -24,6 +17,11 @@ void span_end_span(trace_sdk_Span *span);
 void span_update_name(trace_sdk_Span *span, char *name);
 void span_set_status(trace_sdk_Span *span, char *status, char *description);
 trace_sdk_Scope *span_activate(trace_sdk_Span *span);
+trace_sdk_SpanContext * span_get_context(trace_sdk_Span *span);
+
+// SpanContext
+char *span_context_get_trace_id(trace_sdk_SpanContext *context);
+char *span_context_get_span_id(trace_sdk_SpanContext *context);
 
 // Scope
 int scope_detach(trace_sdk_Scope *scope);

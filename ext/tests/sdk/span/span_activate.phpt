@@ -17,6 +17,7 @@ $child = $tracer->spanBuilder('child')->startSpan();
 $child->end();
 
 $parent->end();
+assert($parent->getContext()->getTraceId() === $child->getContext()->getTraceId());
 $scope->detach();
 $tracer->spanBuilder("another-root")->startSpan()->end();
 ?>

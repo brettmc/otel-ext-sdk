@@ -5,6 +5,7 @@
 #include "opentelemetry/sdk/trace/tracer.h"
 #include "opentelemetry/trace/scope.h"
 #include "opentelemetry/trace/span.h"
+#include "opentelemetry/trace/span_context.h"
 #include "opentelemetry/trace/span_metadata.h"
 
 namespace trace_sdk {
@@ -19,10 +20,13 @@ namespace trace_sdk {
         void End();
         //opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Scope> Activate();
         std::unique_ptr<opentelemetry::v1::trace::Scope> Activate();
+        std::shared_ptr<opentelemetry::v1::trace::SpanContext> GetContext();
     private:
         opentelemetry::trace::StatusCode _GetStatusCode(char *status);
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> cpp_span;
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> cpp_tracer;
+        std::shared_ptr<opentelemetry::v1::trace::SpanContext> cpp_span_context;
+        std::string id;
     };
 }
 

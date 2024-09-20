@@ -1,5 +1,6 @@
 #include "span_class.h"
 #include "scope_class.h"
+#include "span_context_class.h"
 #include "../opentelemetry_sdk_arginfo.h"
 #include <Zend/zend_exceptions.h>
 #include "sdk_manager.h"
@@ -72,6 +73,21 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Span, activate) {
     object_init_ex(return_value, scope_ce);
     php_scope_object *intern = Z_SCOPE_OBJ_P(return_value);
     intern->cpp_scope = cpp_scope;
+}
+
+PHP_METHOD(OpenTelemetry_SDK_Trace_Span, getContext) {
+    //php_printf("Span::getContext\n");
+    php_span_object *span_intern = Z_SPAN_OBJ_P(getThis());
+    if (!span_intern->cpp_span) {
+        zend_throw_exception(NULL, "Span is not initialized.", 0);
+        RETURN_NULL();
+    }
+    trace_sdk_SpanContext *cpp_span_context = span_get_context(span_intern->cpp_span);
+    //php_printf("Span::getContext(end)\n");
+
+    object_init_ex(return_value, span_context_ce);
+    php_span_context_object *span_context_intern = Z_SPAN_CONTEXT_OBJ_P(return_value);
+    span_context_intern->cpp_span_context = cpp_span_context;
 }
 
 // Free the C++ Span when the PHP object is destroyed

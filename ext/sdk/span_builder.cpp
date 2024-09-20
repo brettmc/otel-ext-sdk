@@ -16,7 +16,9 @@ namespace trace_sdk {
         if (has_start_time) {
             options.start_system_time = start_time;
         }
-        return cpp_tracer->StartSpan(span_name, attributes, {}, options);  // Start and return the OpenTelemetry C++ Span
+        auto span = cpp_tracer->StartSpan(span_name, attributes, {}, options);  // Start and return the OpenTelemetry C++ Span
+        //php_printf("(c++) SpanBuilder started span: %p\n", span);
+        return span;
     }
 
     void SpanBuilder::AddAttribute(const std::string &key, const opentelemetry::common::AttributeValue &value) {

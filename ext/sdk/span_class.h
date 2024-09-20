@@ -2,9 +2,7 @@
 #define OTEL_EXT_SDK_SPAN_CLASS_H
 
 #include <php.h>
-
-// Forward declaration of the C++ Span
-typedef struct trace_sdk_Span trace_sdk_Span;
+#include "opaque_types.h"
 
 // Define the PHP internal object structure for Span
 typedef struct _php_span_object {

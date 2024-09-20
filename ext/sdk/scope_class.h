@@ -2,11 +2,9 @@
 #define OTEL_EXT_SDK_SCOPE_CLASS_H
 
 #include <php.h>
+#include "opaque_types.h"
 
 extern zend_class_entry *scope_ce;
-
-// Forward declaration of the C++ Scope
-typedef struct trace_sdk_Scope trace_sdk_Scope;
 
 // Define the PHP internal object structure for Scope
 typedef struct _php_scope_object {

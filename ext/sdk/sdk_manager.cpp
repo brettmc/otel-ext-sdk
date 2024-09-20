@@ -2,8 +2,10 @@
 #include "tracer.h"
 #include "tracer_provider.h"
 #include "span_builder.h"
+#include "span_context.h"
 #include "span.h"
 #include "scope.h"
+#include "utils.h"
 #include "php.h"
 #include <Zend/zend_exceptions.h>
 #include <opentelemetry/common/key_value_iterable_view.h>
@@ -59,7 +61,29 @@ trace_sdk_Scope *span_activate(trace_sdk_Span *span) {
     auto scope = new trace_sdk::Scope(std::move(cpp_scope));
     return reinterpret_cast<trace_sdk_Scope*>(scope);
 }
+
+trace_sdk_SpanContext *span_get_context(trace_sdk_Span *span) {
+    auto s = reinterpret_cast<trace_sdk::Span*>(span);
+    opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::SpanContext> cpp_span_context = s->GetContext();
+    auto context = new trace_sdk::SpanContext(cpp_span_context);
+    return reinterpret_cast<trace_sdk_SpanContext*>(context);
+}
 // end Span
+
+// SpanContext
+char *span_context_get_trace_id(trace_sdk_SpanContext *context)
+{
+    auto sc = reinterpret_cast<trace_sdk::SpanContext*>(context);
+    std::string trace_id = sc->GetTraceId();
+
+    return CreateCharPointerFromString(trace_id);
+}
+char *span_context_get_span_id(trace_sdk_SpanContext *context)
+{
+    auto sc = reinterpret_cast<trace_sdk::SpanContext*>(context);
+    return CreateCharPointerFromString(sc->GetSpanId());
+}
+// SpanContext end
 
 // Scope
 void scope_destroy(trace_sdk_Scope *scope) {
@@ -83,6 +107,7 @@ trace_sdk_Span *span_builder_start_span(trace_sdk_SpanBuilder *builder) {
     auto cpp_span = reinterpret_cast<trace_sdk::SpanBuilder*>(builder)->StartSpan();
     auto tracer = reinterpret_cast<trace_sdk::SpanBuilder*>(builder)->GetTracer();
     auto span = new trace_sdk::Span(cpp_span, tracer);
+    //php_printf("new span created: %p\n", span);
     return reinterpret_cast<trace_sdk_Span*>(span);
 }
 

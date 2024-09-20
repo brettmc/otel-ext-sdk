@@ -2,11 +2,7 @@
 #define OTEL_EXT_SDK_SPAN_BUILDER_CLASS_H
 
 #include "php.h"
-
-// Forward declaration of the C++ SpanBuilder and Span
-typedef struct trace_sdk_SpanBuilder trace_sdk_SpanBuilder;
-typedef struct trace_sdk_Span trace_sdk_Span;
-typedef struct trace_sdk_Tracer trace_sdk_Tracer;
+#include "opaque_types.h"
 
 typedef struct _php_span_builder_object {
     zend_object std;

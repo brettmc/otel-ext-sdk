@@ -12,6 +12,7 @@
 #include "sdk/tracer_class.h"
 #include "sdk/span_class.h"
 #include "sdk/scope_class.h"
+#include "sdk/span_context_class.h"
 #include "sdk/span_builder_class.h"
 #include <opentelemetry/version.h>
 
@@ -43,7 +44,8 @@ PHP_MINIT_FUNCTION(opentelemetry_sdk) {
     register_span_builder_class();
     register_tracer_provider_class();
     register_tracer_class();
-    register_class_OpenTelemetry_SDK_Trace_SpanContextInterface();
+    register_span_context_class();
+    //register_class_OpenTelemetry_SDK_Trace_SpanContextInterface();
 
     return SUCCESS;
 }
