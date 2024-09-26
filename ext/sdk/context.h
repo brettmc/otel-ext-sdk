@@ -21,6 +21,7 @@ namespace trace_sdk
         zval GetValue(char *key);
         Context *SetValue(char *key, zval* value);
     private:
+        opentelemetry::v1::context::ContextValue FromZval(zval *value);
         zval ToZval(opentelemetry::v1::context::ContextValue value);
         std::shared_ptr<opentelemetry::context::Context> cpp_context;
     };

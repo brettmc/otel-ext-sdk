@@ -2,7 +2,7 @@
 #include "php.h"
 #include <opentelemetry/nostd/variant.h>
 #include <string>
-#include <iostream>
+#include <zend_exceptions.h>
 
 namespace trace_sdk
 {
@@ -34,7 +34,7 @@ namespace trace_sdk
     Context *Context::SetValue(char *key, zval* value) {
         //auto variant = ConvertFromZval(value);
         //php_printf("(c++)setting value for: %s\n", key);
-        auto new_context = opentelemetry::context::RuntimeContext::SetValue(key, static_cast<int64_t>(123), cpp_context.get());
+        auto new_context = opentelemetry::context::RuntimeContext::SetValue(key, FromZval(value), cpp_context.get());
 
         Context *c = new Context(std::make_shared<opentelemetry::context::Context>(new_context));
         return c;
@@ -47,17 +47,42 @@ namespace trace_sdk
         return ToZval(v);
     }
     //private
+    opentelemetry::v1::context::ContextValue Context::FromZval(zval *value) {
+        opentelemetry::v1::context::ContextValue cpp_value;
+
+        // Convert zval to C++ type
+        switch (Z_TYPE_P(value)) {
+            case IS_LONG:
+                cpp_value = static_cast<int64_t>(Z_LVAL_P(value));  // Convert long to int64_t
+                break;
+
+            case IS_DOUBLE:
+                cpp_value = static_cast<double>(Z_DVAL_P(value));  // Convert double
+                break;
+
+            case IS_TRUE:
+            case IS_FALSE:
+                cpp_value = static_cast<bool>(Z_TYPE_P(value) == IS_TRUE);  // Convert boolean
+                break;
+            default:
+                zend_throw_exception(zend_ce_exception, "Unsupported Context value type", 0);
+                cpp_value = opentelemetry::nostd::monostate();  // Use monostate to represent an unsupported type
+                break;
+        }
+
+        return cpp_value;
+    }
     zval Context::ToZval(opentelemetry::v1::context::ContextValue value) {
         zval result;
         ZVAL_UNDEF(&result);
         if (opentelemetry::nostd::holds_alternative<int64_t>(value)) {
-            int64_t int_value = opentelemetry::nostd::get<int64_t>(value);
-
-            // Convert the int64_t to a zval
-            ZVAL_LONG(&result, int_value);
+            ZVAL_LONG(&result, opentelemetry::nostd::get<int64_t>(value));
+        } else if (opentelemetry::nostd::holds_alternative<double>(value)) {
+            ZVAL_DOUBLE(&result, opentelemetry::nostd::get<double>(value));
+        } else if (opentelemetry::nostd::holds_alternative<bool>(value)) {
+            ZVAL_BOOL(&result, opentelemetry::nostd::get<bool>(value));
         } else {
-            ZVAL_NULL(&result);
-            //php_printf("Value not found or wrong type.\n");
+            ZVAL_NULL(&result);  // If type is not supported, return NULL
         }
         return result;
     }
