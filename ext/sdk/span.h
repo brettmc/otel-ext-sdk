@@ -11,9 +11,11 @@
 namespace trace_sdk {
     class Span {
     public:
+        Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span>);
         Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> span, opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> tracer);
         ~Span(); // Destructor
 
+        opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> GetInternal();
         void DoSomething();  // Placeholder function
         void UpdateName(char *name);
         void SetStatus(char *status, char *description);

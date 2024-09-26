@@ -3,6 +3,10 @@
 #include <opentelemetry/nostd/variant.h>
 #include <string>
 #include <zend_exceptions.h>
+#include "span_class.h"
+#include "span_context_class.h"
+#include "span.h"
+#include "span_context.h"
 
 namespace trace_sdk
 {
@@ -18,7 +22,7 @@ namespace trace_sdk
     }
 
     void Context::Test() {
-        php_printf("(c++)Context::Test\n");
+        //php_printf("(c++)Context::Test\n");
         //cpp_span_context = std::make_shared<opentelemetry::v1::trace::SpanContext>(context);
 
     }
@@ -64,6 +68,28 @@ namespace trace_sdk
             case IS_FALSE:
                 cpp_value = static_cast<bool>(Z_TYPE_P(value) == IS_TRUE);  // Convert boolean
                 break;
+            case IS_OBJECT:
+                // Check if the object is a Span
+                if (instanceof_function(Z_OBJCE_P(value), span_ce)) {
+                    php_span_object *span_obj = Z_SPAN_OBJ_P(value);  // Cast zval to span object
+                    trace_sdk::Span *span = reinterpret_cast<trace_sdk::Span*>(span_obj->cpp_span);
+
+                    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Span> span_ptr = span->GetInternal();
+                    cpp_value = span_ptr;
+                }
+                // Check if the object is a SpanContext
+                else if (instanceof_function(Z_OBJCE_P(value), span_context_ce)) {
+                    php_span_context_object *span_context_obj = Z_SPAN_CONTEXT_OBJ_P(value);  // Cast zval to span context object
+                    trace_sdk::SpanContext *spanContext = reinterpret_cast<trace_sdk::SpanContext*>(span_context_obj->cpp_span_context);
+
+                    opentelemetry::nostd::shared_ptr<opentelemetry::trace::SpanContext> span_context_ptr = spanContext->GetInternal();
+                    cpp_value = span_context_ptr;
+                } else {
+                    // Unsupported object type
+                    zend_throw_exception(zend_ce_exception, "Unsupported object type", 0);
+                    return opentelemetry::nostd::monostate();  // Return default value
+                }
+                break;
             default:
                 zend_throw_exception(zend_ce_exception, "Unsupported Context value type", 0);
                 cpp_value = opentelemetry::nostd::monostate();  // Use monostate to represent an unsupported type
@@ -81,6 +107,18 @@ namespace trace_sdk
             ZVAL_DOUBLE(&result, opentelemetry::nostd::get<double>(value));
         } else if (opentelemetry::nostd::holds_alternative<bool>(value)) {
             ZVAL_BOOL(&result, opentelemetry::nostd::get<bool>(value));
+        } else if (opentelemetry::nostd::holds_alternative<opentelemetry::nostd::shared_ptr<opentelemetry::trace::Span>>(value)) {
+            // Convert Span to zval (PHP object)
+            object_init_ex(&result, span_ce);  // Initialize a new Span object
+            auto span = new trace_sdk::Span(opentelemetry::nostd::get<opentelemetry::nostd::shared_ptr<opentelemetry::trace::Span>>(value));
+            php_span_object *span_intern = Z_SPAN_OBJ_P(&result);
+            span_intern->cpp_span = reinterpret_cast<trace_sdk_Span*>(span);
+        } else if (opentelemetry::nostd::holds_alternative<opentelemetry::nostd::shared_ptr<opentelemetry::trace::SpanContext>>(value)) {
+            // Convert SpanContext to zval (PHP object)
+            object_init_ex(&result, span_context_ce);  // Initialize a new SpanContext object
+            auto spanContext = new trace_sdk::SpanContext(opentelemetry::nostd::get<opentelemetry::nostd::shared_ptr<opentelemetry::trace::SpanContext>>(value));
+            php_span_context_object *span_context_intern = Z_SPAN_CONTEXT_OBJ_P(&result);
+            span_context_intern->cpp_span_context = reinterpret_cast<trace_sdk_SpanContext*>(spanContext);
         } else {
             ZVAL_NULL(&result);  // If type is not supported, return NULL
         }

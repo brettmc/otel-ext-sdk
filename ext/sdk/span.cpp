@@ -2,6 +2,10 @@
 #include "php.h"
 
 namespace trace_sdk {
+    Span::Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> span) : cpp_span(span) {
+        auto context = cpp_span->GetContext();
+        cpp_span_context = std::make_shared<opentelemetry::v1::trace::SpanContext>(context);
+    }
     Span::Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> span, opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> tracer) : cpp_span(span), cpp_tracer(tracer) {
 
         auto context = cpp_span->GetContext();
@@ -22,6 +26,10 @@ namespace trace_sdk {
 
     Span::~Span() {
         //php_printf("(c++)Span destroyed: %s\n", id.c_str());
+    }
+
+    opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> Span::GetInternal() {
+        return cpp_span;
     }
 
     void Span::DoSomething() {

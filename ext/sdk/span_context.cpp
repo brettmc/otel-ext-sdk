@@ -10,8 +10,12 @@ namespace trace_sdk {
         //php_printf("(c++)SpanContext destroyed\n");
     }
 
+    opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::SpanContext> SpanContext::GetInternal() {
+        return cpp_span_context;
+    }
+
     void SpanContext::DoSomething() {
-        php_printf("(c++)SpanContext is doing something!\n");
+        //php_printf("(c++)SpanContext is doing something!\n");
     }
     std::string SpanContext::GetTraceId() {
         char buf[32];

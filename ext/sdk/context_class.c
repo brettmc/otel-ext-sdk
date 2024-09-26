@@ -76,7 +76,7 @@ static void context_key_free_obj(zend_object *object) {
 
 static zend_object *context_key_create_object(zend_class_entry *class_type) {
     //php_printf("context_key_create_object\n");
-    php_context_key_object *obj = (php_context_key_object *)ecalloc(1, sizeof(php_context_key_object) + zend_object_properties_size(class_type));
+    php_context_key_object *obj = (php_context_key_object *)ecalloc(1, sizeof(php_context_key_object) + zend_object_properties_size(class_type) + 16);
     zend_object_std_init(&obj->std, class_type);
     object_properties_init(&obj->std, class_type);
     obj->std.handlers = &context_key_object_handlers;
@@ -94,7 +94,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, getCurrent)
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_Context, activate)
 {
-    php_printf("(php)Context::activate\n");
+    //php_printf("(php)Context::activate\n");
     object_init_ex(return_value, scope_ce);
 }
 

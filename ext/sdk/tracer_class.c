@@ -12,7 +12,7 @@ zend_class_entry *tracer_ce;
 zend_object* tracer_create_object(zend_class_entry *class_type)
 {
     //php_printf("(php)tracer_create_object\n");
-    php_tracer_object *intern = (php_tracer_object *) ecalloc(1, sizeof(php_tracer_object) + zend_object_properties_size(class_type));
+    php_tracer_object *intern = (php_tracer_object *) ecalloc(1, sizeof(php_tracer_object) + zend_object_properties_size(class_type) + 16);
 
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
@@ -30,7 +30,7 @@ void tracer_free_obj(zend_object *object)
 
     if (intern->cpp_tracer != NULL) {
         tracer_destroy(intern->cpp_tracer);
-        intern->cpp_tracer = NULL;
+        //intern->cpp_tracer = NULL;
     }
 
     zend_object_std_dtor(&intern->std);

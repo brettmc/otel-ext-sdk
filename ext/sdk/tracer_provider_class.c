@@ -9,7 +9,7 @@ static zend_object_handlers tracer_provider_object_handlers;
 zend_object* tracer_provider_create_object(zend_class_entry *class_type)
 {
     //php_printf("(php)tracer_provider_create_object\n");
-    php_tracer_provider_object *intern = (php_tracer_provider_object *) ecalloc(1, sizeof(php_tracer_provider_object) + zend_object_properties_size(class_type));
+    php_tracer_provider_object *intern = (php_tracer_provider_object *) ecalloc(1, sizeof(php_tracer_provider_object) + zend_object_properties_size(class_type) + 16);
 
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
@@ -35,16 +35,14 @@ void tracer_provider_free_obj(zend_object *object)
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, __construct) {
     //php_printf("(php)TracerProvider::construct\n");
-    php_tracer_provider_object *intern;
-    intern = (php_tracer_provider_object *) Z_OBJ_P(ZEND_THIS);
+    php_tracer_provider_object *intern = Z_TRACER_PROVIDER_OBJ_P(getThis());
 
     intern->cpp_tracer_provider = tracer_provider_create();
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, __destruct) {
     //php_printf("(php)TracerProvider::destruct\n");
-    php_tracer_provider_object *intern;
-    intern = (php_tracer_provider_object *) Z_OBJ_P(ZEND_THIS);
+    php_tracer_provider_object *intern = Z_TRACER_PROVIDER_OBJ_P(getThis());
 
     if (intern->cpp_tracer_provider != NULL) {
         tracer_provider_destroy(intern->cpp_tracer_provider);
@@ -64,11 +62,11 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, getTracer) {
     ZEND_PARSE_PARAMETERS_END();
 
     php_tracer_provider_object *intern;
-    intern = (php_tracer_provider_object *) Z_OBJ_P(ZEND_THIS);
+    intern = Z_TRACER_PROVIDER_OBJ_P(getThis());
     trace_sdk_Tracer *cpp_tracer = tracer_provider_get_tracer(intern->cpp_tracer_provider);
     //php_printf("(php)got a c++ tracer\n");
     object_init_ex(return_value, tracer_ce);
-    php_tracer_object *tracer_intern = (php_tracer_object *) Z_OBJ_P(return_value);
+    php_tracer_object *tracer_intern = Z_TRACER_OBJ_P(return_value);
     tracer_intern->cpp_tracer = cpp_tracer;
 }
 

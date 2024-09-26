@@ -150,7 +150,7 @@ void span_builder_free_obj(zend_object *object)
 
 zend_object *span_builder_create_object(zend_class_entry *ce)
 {
-    php_span_builder_object *intern = (php_span_builder_object *)ecalloc(1, sizeof(php_span_builder_object) + zend_object_properties_size(ce));
+    php_span_builder_object *intern = (php_span_builder_object *)ecalloc(1, sizeof(php_span_builder_object) + zend_object_properties_size(ce) + 16);
 
     zend_object_std_init(&intern->std, ce);
     object_properties_init(&intern->std, ce);
