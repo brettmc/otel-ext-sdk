@@ -8,13 +8,13 @@ namespace trace_sdk
 {
     Context::Context() {}
     Context::Context(std::shared_ptr<opentelemetry::context::Context> context) : cpp_context(context) {
-        php_printf("(c++)Context::construct\n");
+        //php_printf("(c++)Context::construct\n");
         //php_printf("(c++)Context::construct (with context pointer)\n");
     }
 
     Context::~Context()
     {
-        php_printf("(c++)Context::destruct\n");
+        //php_printf("(c++)Context::destruct\n");
     }
 
     void Context::Test() {

@@ -19,7 +19,7 @@ void context_free_obj(zend_object *object)
 
     if (intern->cpp_context) {
         context_destroy(intern->cpp_context);
-        intern->cpp_context = NULL;
+        //intern->cpp_context = NULL;
     }
 
     zend_object_std_dtor(&intern->std);  // Standard PHP object destructor
@@ -53,7 +53,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, __construct)
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, __destruct)
 {
-    php_printf("ContextKey::__destruct\n");
+    //php_printf("ContextKey::__destruct\n");
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, name)
@@ -66,7 +66,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, name)
 static void context_key_free_obj(zend_object *object) {
     //php_printf("context_key_free_obj\n");
     php_context_key_object *intern = (php_context_key_object *)((char *)object - XtOffsetOf(php_context_key_object, std));
-    php_printf("(context_key_free_obj)name refcount: %d\n", GC_REFCOUNT(intern->name));
+    //php_printf("(context_key_free_obj)name refcount: %d\n", GC_REFCOUNT(intern->name));
     if (intern->name) {
         zend_string_release(intern->name);
         intern->name = NULL;
@@ -114,10 +114,12 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, with)
 
     // Call the method
     if (call_user_function(EG(function_table), key, &method_name, &retval, 0, NULL) == SUCCESS) {
-        key_str = ZSTR_VAL(Z_STR(retval));
+        key_str = estrdup(ZSTR_VAL(Z_STR(retval)));
     } else {
         php_printf("Failed to call method 'name'.\n");
     }
+    zval_ptr_dtor(&method_name);
+    zval_ptr_dtor(&retval);
 
     //php_printf("The object is an instance of class: %s\n", ZSTR_VAL(ce->name));
     //return a new context with extra value applied
@@ -127,6 +129,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, with)
     object_init_ex(return_value, context_ce);
     php_context_object *context_intern = Z_CONTEXT_OBJ_P(return_value);
     context_intern->cpp_context = new_context;
+    efree(key_str);
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_Context, get)
@@ -148,6 +151,8 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, get)
     } else {
         php_printf("Failed to call method 'name'.\n");
     }
+    zval_ptr_dtor(&method_name);
+    zval_ptr_dtor(&retval);
     zval item = context_get_value(internal->cpp_context, key_str);
     RETURN_ZVAL(&item, 1, 0);
 }
