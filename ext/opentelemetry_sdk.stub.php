@@ -17,6 +17,33 @@ class Scope implements ScopeInterface
     public function detach(): int {}
 }
 
+interface ContextKeyInterface
+{
+}
+
+class ContextKey implements ContextKeyInterface
+{
+    public function __construct(private readonly ?string $name = null) {}
+    public function __destruct() {}
+    public function name(): ?string {}
+}
+
+class Context implements ContextInterface
+{
+    public static function getCurrent(): ContextInterface {}
+    public function activate(): ScopeInterface {}
+    public function with(ContextKeyInterface $key, mixed $value): ContextInterface {}
+    public function get(ContextKeyInterface $key): mixed {}
+}
+
+interface ContextInterface
+{
+    public static function getCurrent(): ContextInterface;
+    public function activate(): ScopeInterface;
+    public function with(ContextKeyInterface $key, mixed $value): ContextInterface;
+    public function get(ContextKeyInterface $key): mixed;
+}
+
 interface SpanContextInterface
 {
     public function getTraceId(): string;

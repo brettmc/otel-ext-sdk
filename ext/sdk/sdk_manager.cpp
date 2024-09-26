@@ -5,6 +5,7 @@
 #include "span_context.h"
 #include "span.h"
 #include "scope.h"
+#include "context.h"
 #include "utils.h"
 #include "php.h"
 #include <Zend/zend_exceptions.h>
@@ -107,6 +108,30 @@ int scope_detach(trace_sdk_Scope *scope_ptr) {
     return 0;
 }
 // end Scope
+
+// Context
+trace_sdk_Context *context_get_current() {
+    trace_sdk::Context *context = trace_sdk::Context::GetCurrent();
+    return reinterpret_cast<trace_sdk_Context*>(context);
+}
+
+void context_test(/*trace_sdk_Context *context_ptr*/) {
+    //trace_sdk::Context *context = reinterpret_cast<trace_sdk::Context*>(context_ptr);
+    trace_sdk::Context::Test();
+}
+trace_sdk_Context *context_set_value(trace_sdk_Context *context, char *key, zval *value){
+    trace_sdk::Context *cpp_context = reinterpret_cast<trace_sdk::Context*>(context);
+    trace_sdk::Context *ctx_new = cpp_context->SetValue(key, value);
+    return reinterpret_cast<trace_sdk_Context*>(ctx_new);
+}
+zval *context_get_value(trace_sdk_Context *context, char *key) {
+    trace_sdk::Context *cpp_context = reinterpret_cast<trace_sdk::Context*>(context);
+    return cpp_context->GetValue(key);
+//    zval *zv;
+//    ZVAL_STRING(zv, "hello");
+//    return zv;
+}
+// Context end
 
 // SpanBuilder
 void span_builder_destroy(trace_sdk_SpanBuilder *span_builder) {

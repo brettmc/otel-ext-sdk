@@ -36,7 +36,7 @@ if test "$PHP_OPENTELEMETRY_SDK" != "no"; then
     dnl the line above _should_ add linker flags...
     LDFLAGS="$LDFLAGS $CURL_LIBS"
 
-    CXXFLAGS="-std=c++14 -g"
+    CXXFLAGS="-std=c++17 -g"
     PHP_REQUIRE_CXX()
     dnl PHP_CXX_COMPILE_STDCXX(11, mandatory, OPENTELEMETRY_SDK_STDCXX)
 
