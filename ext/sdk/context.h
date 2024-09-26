@@ -18,10 +18,10 @@ namespace trace_sdk
         //void Detach();
         static void Test();
         static Context *GetCurrent();
-        zval *GetValue(char *key);
+        zval GetValue(char *key);
         Context *SetValue(char *key, zval* value);
     private:
-        zval *ToZval(opentelemetry::v1::context::ContextValue value);
+        zval ToZval(opentelemetry::v1::context::ContextValue value);
         std::shared_ptr<opentelemetry::context::Context> cpp_context;
     };
 } // namespace trace_sdk

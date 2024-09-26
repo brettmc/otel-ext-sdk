@@ -18,6 +18,7 @@ void context_free_obj(zend_object *object)
     php_context_object *intern = (php_context_object *)((char *)(object) - XtOffsetOf(php_context_object, std));
 
     if (intern->cpp_context) {
+        context_destroy(intern->cpp_context);
         intern->cpp_context = NULL;
     }
 
@@ -47,7 +48,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, __construct)
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "S", &name) == FAILURE) {
         return;
     }
-    obj->name = name;
+    obj->name = zend_string_copy(name);
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, __destruct)
@@ -65,10 +66,12 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, name)
 static void context_key_free_obj(zend_object *object) {
     //php_printf("context_key_free_obj\n");
     php_context_key_object *intern = (php_context_key_object *)((char *)object - XtOffsetOf(php_context_key_object, std));
-    zend_string_release(intern->name);
-    intern->name = NULL;
+    php_printf("(context_key_free_obj)name refcount: %d\n", GC_REFCOUNT(intern->name));
+    if (intern->name) {
+        zend_string_release(intern->name);
+        intern->name = NULL;
+    }
     zend_object_std_dtor(&intern->std);
-    //efree(intern);
 }
 
 static zend_object *context_key_create_object(zend_class_entry *class_type) {
@@ -145,8 +148,8 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, get)
     } else {
         php_printf("Failed to call method 'name'.\n");
     }
-    zval *item = context_get_value(internal->cpp_context, key_str);
-    RETURN_ZVAL(item, 0, 0);
+    zval item = context_get_value(internal->cpp_context, key_str);
+    RETURN_ZVAL(&item, 1, 0);
 }
 
 // Initialize the classes

@@ -34,7 +34,8 @@ void scope_destroy(trace_sdk_Scope *scope);
 trace_sdk_Context *context_get_current();
 void context_test(/*trace_sdk_Context *context*/);
 trace_sdk_Context *context_set_value(trace_sdk_Context *context, char *key, zval *value);
-zval *context_get_value(trace_sdk_Context *context, char *key);
+zval context_get_value(trace_sdk_Context *context, char *key);
+void context_destroy(trace_sdk_Context *context);
 
 // SpanBuilder
 void span_builder_destroy(trace_sdk_SpanBuilder *span_builder);

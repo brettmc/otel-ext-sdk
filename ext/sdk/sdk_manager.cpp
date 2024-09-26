@@ -119,12 +119,16 @@ void context_test(/*trace_sdk_Context *context_ptr*/) {
     //trace_sdk::Context *context = reinterpret_cast<trace_sdk::Context*>(context_ptr);
     trace_sdk::Context::Test();
 }
+void context_destroy(trace_sdk_Context *context) {
+    trace_sdk::Context *cpp_context = reinterpret_cast<trace_sdk::Context*>(context);
+    delete cpp_context;
+}
 trace_sdk_Context *context_set_value(trace_sdk_Context *context, char *key, zval *value){
     trace_sdk::Context *cpp_context = reinterpret_cast<trace_sdk::Context*>(context);
     trace_sdk::Context *ctx_new = cpp_context->SetValue(key, value);
     return reinterpret_cast<trace_sdk_Context*>(ctx_new);
 }
-zval *context_get_value(trace_sdk_Context *context, char *key) {
+zval context_get_value(trace_sdk_Context *context, char *key) {
     trace_sdk::Context *cpp_context = reinterpret_cast<trace_sdk::Context*>(context);
     return cpp_context->GetValue(key);
 //    zval *zv;

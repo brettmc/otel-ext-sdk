@@ -8,11 +8,13 @@ namespace trace_sdk
 {
     Context::Context() {}
     Context::Context(std::shared_ptr<opentelemetry::context::Context> context) : cpp_context(context) {
+        php_printf("(c++)Context::construct\n");
         //php_printf("(c++)Context::construct (with context pointer)\n");
     }
 
     Context::~Context()
     {
+        php_printf("(c++)Context::destruct\n");
     }
 
     void Context::Test() {
@@ -38,23 +40,23 @@ namespace trace_sdk
         return c;
     }
 
-    zval *Context::GetValue(char *key) {
+    zval Context::GetValue(char *key) {
         //php_printf("(c++)getting value for: %s\n", key);
         opentelemetry::v1::context::ContextValue v = cpp_context.get()->GetValue(key);
 
         return ToZval(v);
     }
     //private
-    zval *Context::ToZval(opentelemetry::v1::context::ContextValue value) {
-        zval *result = (zval *)emalloc(sizeof(zval));
-        ZVAL_UNDEF(result);
+    zval Context::ToZval(opentelemetry::v1::context::ContextValue value) {
+        zval result;
+        ZVAL_UNDEF(&result);
         if (opentelemetry::nostd::holds_alternative<int64_t>(value)) {
             int64_t int_value = opentelemetry::nostd::get<int64_t>(value);
 
             // Convert the int64_t to a zval
-            ZVAL_LONG(result, int_value);
+            ZVAL_LONG(&result, int_value);
         } else {
-            ZVAL_NULL(result);
+            ZVAL_NULL(&result);
             //php_printf("Value not found or wrong type.\n");
         }
         return result;
