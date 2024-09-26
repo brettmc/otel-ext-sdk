@@ -28,7 +28,7 @@ void context_free_obj(zend_object *object)
 // Create a new PHP Context object
 zend_object *context_create_object(zend_class_entry *ce)
 {
-    php_context_object *intern = (php_context_object *)ecalloc(1, sizeof(php_context_object) + zend_object_properties_size(ce));
+    php_context_object *intern = (php_context_object *)ecalloc(1, sizeof(php_context_object) + zend_object_properties_size(ce) + 16);
 
     zend_object_std_init(&intern->std, ce);
     object_properties_init(&intern->std, ce);

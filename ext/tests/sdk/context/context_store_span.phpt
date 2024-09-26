@@ -3,7 +3,7 @@ Context store and retrieve a Span
 --EXTENSIONS--
 opentelemetry_sdk
 --ENV--
-OTEL_TRACES_EXPORTER=none
+OTEL_TRACES_EXPORTER=console
 --FILE--
 <?php
 use OpenTelemetry\SDK\Trace\SpanInterface;
@@ -22,5 +22,15 @@ var_dump(get_class($span));
 $span->updateName('updated');
 $span->end();
 ?>
---EXPECT--
+--EXPECTF--
 string(28) "OpenTelemetry\SDK\Trace\Span"
+{
+  name          : updated
+  trace_id      : %s
+  span_id       : %s
+  tracestate    :%s
+  parent_span_id: 0000000000000000
+  start         : %d
+  duration      : %d
+%A
+}

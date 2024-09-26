@@ -3,7 +3,7 @@ Context store and retrieve a SpanContext
 --EXTENSIONS--
 opentelemetry_sdk
 --ENV--
-OTEL_TRACES_EXPORTER=none
+OTEL_TRACES_EXPORTER=console
 --FILE--
 <?php
 use OpenTelemetry\SDK\Trace\SpanInterface;
