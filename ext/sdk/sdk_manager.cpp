@@ -131,9 +131,6 @@ trace_sdk_Context *context_set_value(trace_sdk_Context *context, char *key, zval
 zval context_get_value(trace_sdk_Context *context, char *key) {
     trace_sdk::Context *cpp_context = reinterpret_cast<trace_sdk::Context*>(context);
     return cpp_context->GetValue(key);
-//    zval *zv;
-//    ZVAL_STRING(zv, "hello");
-//    return zv;
 }
 // Context end
 
@@ -144,9 +141,7 @@ void span_builder_destroy(trace_sdk_SpanBuilder *span_builder) {
 
 trace_sdk_Span *span_builder_start_span(trace_sdk_SpanBuilder *builder) {
     auto cpp_span = reinterpret_cast<trace_sdk::SpanBuilder*>(builder)->StartSpan();
-    auto tracer = reinterpret_cast<trace_sdk::SpanBuilder*>(builder)->GetTracer();
-    auto span = new trace_sdk::Span(cpp_span, tracer);
-    //php_printf("new span created: %p\n", span);
+    auto span = new trace_sdk::Span(cpp_span);
     return reinterpret_cast<trace_sdk_Span*>(span);
 }
 

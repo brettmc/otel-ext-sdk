@@ -1,26 +1,10 @@
 #include "span.h"
 #include "php.h"
+#include <opentelemetry/trace/scope.h>
 
 namespace trace_sdk {
     Span::Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> span) : cpp_span(span) {
         auto context = cpp_span->GetContext();
-        cpp_span_context = std::make_shared<opentelemetry::v1::trace::SpanContext>(context);
-    }
-    Span::Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> span, opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> tracer) : cpp_span(span), cpp_tracer(tracer) {
-
-        auto context = cpp_span->GetContext();
-
-        char tbuf[32], sbuf[16];
-        context.trace_id().ToLowerBase16(tbuf);
-        context.span_id().ToLowerBase16(sbuf);
-        std::string trace_id = std::string(tbuf, sizeof(tbuf));
-        std::string span_id = std::string(sbuf, sizeof(sbuf));
-        id = span_id;
-        //php_printf("(c++)Span created (with cpp span): %s\n", id.c_str());
-
-
-//        php_printf("Trace ID: %s\n", t);
-        //php_printf("(c++)Span ID: %s\n", cpp_span->GetContext().trace_id());
         cpp_span_context = std::make_shared<opentelemetry::v1::trace::SpanContext>(context);
     }
 
@@ -32,10 +16,6 @@ namespace trace_sdk {
         return cpp_span;
     }
 
-    void Span::DoSomething() {
-        //php_printf("(c++)Span is doing something!\n");
-    }
-
     void Span::UpdateName(char *name) {
         cpp_span->UpdateName(name);
     }
@@ -45,7 +25,7 @@ namespace trace_sdk {
 
     std::unique_ptr<opentelemetry::v1::trace::Scope> Span::Activate() {
         //php_printf("(c++)Span::Activate\n");
-        std::unique_ptr<opentelemetry::v1::trace::Scope> scope = std::make_unique<opentelemetry::v1::trace::Scope>(cpp_tracer->WithActiveSpan(cpp_span));
+        std::unique_ptr<opentelemetry::v1::trace::Scope> scope = std::make_unique<opentelemetry::v1::trace::Scope>(cpp_span);
         return scope;
     }
 
@@ -57,9 +37,6 @@ namespace trace_sdk {
     std::shared_ptr<opentelemetry::v1::trace::SpanContext> Span::GetContext() {
         //php_printf("(c++)Span GetContext: %p\n", cpp_span);
         return cpp_span_context;
-        //std::unique_ptr<opentelemetry::v1::trace::SpanContext> context = std::make_unique<opentelemetry::v1::trace::SpanContext>(cpp_span->GetContext());
-        //auto context = cpp_span->IsRecording();
-        //return std::make_unique<opentelemetry::v1::trace::SpanContext>(context);
     }
 
     //private
