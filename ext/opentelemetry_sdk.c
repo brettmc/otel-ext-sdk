@@ -8,13 +8,13 @@
 #include "ext/standard/info.h"
 #include "php_opentelemetry_sdk.h"
 #include "opentelemetry_sdk_arginfo.h"
-#include "sdk/tracer_provider_class.h"
-#include "sdk/tracer_class.h"
-#include "sdk/span_class.h"
-#include "sdk/scope_class.h"
-#include "sdk/context_class.h"
-#include "sdk/span_context_class.h"
-#include "sdk/span_builder_class.h"
+#include "sdk/php/tracer_provider_class.h"
+#include "sdk/php/tracer_class.h"
+#include "sdk/php/span_class.h"
+#include "sdk/php/scope_class.h"
+#include "sdk/php/context_class.h"
+#include "sdk/php/span_context_class.h"
+#include "sdk/php/span_builder_class.h"
 #include <opentelemetry/version.h>
 
 /* For compatibility with older PHP versions */

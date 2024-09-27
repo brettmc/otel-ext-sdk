@@ -3,8 +3,8 @@
 #include <Zend/zend_interfaces.h>
 #include "tracer_class.h"
 #include "span_builder_class.h"
-#include "sdk_manager.h"
-#include "../opentelemetry_sdk_arginfo.h"
+#include "../sdk_manager.h"
+#include "../../opentelemetry_sdk_arginfo.h"
 
 static zend_object_handlers tracer_object_handlers;
 zend_class_entry *tracer_ce;

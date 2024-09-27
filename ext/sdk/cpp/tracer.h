@@ -10,7 +10,6 @@ namespace trace_sdk {
         Tracer(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> tracer);
         ~Tracer(); // Destructor
 
-        void DoSomething();  // Placeholder function
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> StartSpan();
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> GetTracer();
     private:

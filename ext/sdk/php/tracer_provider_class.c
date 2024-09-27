@@ -2,7 +2,7 @@
 #include <Zend/zend_exceptions.h>
 #include "tracer_class.h"
 #include "tracer_provider_class.h"
-#include "../opentelemetry_sdk_arginfo.h"
+#include "../../opentelemetry_sdk_arginfo.h"
 
 static zend_object_handlers tracer_provider_object_handlers;
 

@@ -10,11 +10,6 @@ namespace trace_sdk {
         //php_printf("(c++)Tracer destroyed\n");
     }
 
-    void Tracer::DoSomething() {
-        //php_printf("(c++)Tracer is doing something!\n");
-        auto span = cpp_tracer->StartSpan("do-something");
-        span->End();
-    }
     opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> Tracer::GetTracer() {
         return cpp_tracer;
     }

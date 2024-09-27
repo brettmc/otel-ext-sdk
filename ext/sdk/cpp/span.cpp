@@ -9,7 +9,6 @@ namespace trace_sdk {
     }
 
     Span::~Span() {
-        //php_printf("(c++)Span destroyed: %s\n", id.c_str());
     }
 
     opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> Span::GetInternal() {
@@ -30,7 +29,6 @@ namespace trace_sdk {
     }
 
     void Span::End() {
-        //php_printf("(c++)Span is ending: %s\n", id.c_str());
         cpp_span->End();
     }
 

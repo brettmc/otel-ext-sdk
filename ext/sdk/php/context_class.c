@@ -1,8 +1,8 @@
 #include "context_class.h"
 #include "scope_class.h"
-#include "../opentelemetry_sdk_arginfo.h"
+#include "../../opentelemetry_sdk_arginfo.h"
 #include <Zend/zend_exceptions.h>
-#include "sdk_manager.h"
+#include "../sdk_manager.h"
 #include "zend_types.h"
 
 static zend_object_handlers context_object_handlers;

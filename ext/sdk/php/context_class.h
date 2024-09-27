@@ -2,7 +2,7 @@
 #define OTEL_EXT_SDK_CONTEXT_CLASS_H
 
 #include <php.h>
-#include "opaque_types.h"
+#include "../opaque_types.h"
 
 extern zend_class_entry *context_ce;
 extern zend_class_entry *context_key_ce;

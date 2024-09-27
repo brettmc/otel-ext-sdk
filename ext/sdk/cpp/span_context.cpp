@@ -14,9 +14,6 @@ namespace trace_sdk {
         return cpp_span_context;
     }
 
-    void SpanContext::DoSomething() {
-        //php_printf("(c++)SpanContext is doing something!\n");
-    }
     std::string SpanContext::GetTraceId() {
         char buf[32];
         cpp_span_context->trace_id().ToLowerBase16(buf);

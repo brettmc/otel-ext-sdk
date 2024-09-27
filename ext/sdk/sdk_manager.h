@@ -8,7 +8,6 @@ extern "C" {
 
 // Tracer
 void tracer_destroy(trace_sdk_Tracer *tracer);
-void tracer_do_something(trace_sdk_Tracer *tracer);
 trace_sdk_SpanBuilder *tracer_create_span_builder(trace_sdk_Tracer *tracer, const char *span_name);
 
 // Span
@@ -47,7 +46,6 @@ trace_sdk_Span *span_builder_start_span(trace_sdk_SpanBuilder *builder);
 // Tracer Provider
 trace_sdk_TracerProvider *tracer_provider_create();
 void tracer_provider_destroy(trace_sdk_TracerProvider *provider);
-void tracer_provider_do_something(trace_sdk_TracerProvider *provider);
 trace_sdk_Tracer *tracer_provider_get_tracer(trace_sdk_TracerProvider *provider);
 
 #ifdef __cplusplus

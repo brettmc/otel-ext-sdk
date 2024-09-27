@@ -25,7 +25,6 @@ namespace trace_sdk {
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> cpp_span;
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> cpp_tracer;
         std::shared_ptr<opentelemetry::v1::trace::SpanContext> cpp_span_context;
-        std::string id;
     };
 }
 

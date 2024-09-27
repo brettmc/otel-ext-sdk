@@ -11,7 +11,6 @@ namespace trace_sdk {
         ~SpanContext(); // Destructor
 
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::SpanContext> GetInternal();
-        void DoSomething();  // Placeholder function
         std::string GetTraceId();
         std::string GetSpanId();
         int GetTraceFlags();

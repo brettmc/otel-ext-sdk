@@ -2,8 +2,8 @@
 #define OPENTELEMETRY_SDK_TRACER_PROVIDER_CLASS_H
 
 #include "php.h"
-#include "sdk_manager.h"
-#include "opaque_types.h"
+#include "../sdk_manager.h"
+#include "../opaque_types.h"
 
 #ifdef __cplusplus
 extern "C" {

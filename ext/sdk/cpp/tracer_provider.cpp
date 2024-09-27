@@ -2,11 +2,9 @@
 #include "php.h"
 #include <string>
 #include <Zend/zend_exceptions.h>
-#include "../php_opentelemetry_sdk.h"
+#include "../../php_opentelemetry_sdk.h"
 #include "opentelemetry/exporters/ostream/span_exporter_factory.h"
 #include "opentelemetry/exporters/otlp/otlp_http_exporter.h"
-//#include "opentelemetry/exporters/otlp/otlp_http_exporter_factory.h"
-//#include "opentelemetry/exporters/otlp/otlp_http_exporter_options.h"
 #include "opentelemetry/sdk/resource/resource.h"
 #include "opentelemetry/sdk/trace/exporter.h"
 #include "opentelemetry/sdk/trace/processor.h"
@@ -62,34 +60,19 @@ namespace trace_sdk {
     }
 
     TracerProvider::~TracerProvider() {
-        // Destructor logic
         //php_printf("(c++)TracerProvider destructor\n");
         if (cpp_tracer_provider) {
             cpp_tracer_provider->Shutdown();
         }
-        // No need to manually delete cpp_tracer_provider.
-        // std::shared_ptr will automatically handle the cleanup.
     }
 
     opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> TracerProvider::GetTracer() {
         //php_printf("(c++)Getting a Tracer from TracerProvider...\n");
-        //return std::make_shared<Tracer>();
         if (cpp_tracer_provider) {
             return cpp_tracer_provider->GetTracer("foo");
         } else {
             return noop_tracer_provider->GetTracer("foo");
         }
-    }
-
-    void TracerProvider::DoSomething() {
-        if (!cpp_tracer_provider) {
-            zend_throw_exception(NULL, "TracerProvider is not initialized", 0);
-            //todo throw?
-        }
-        //php_printf("(c++)Doing something with the TracerProvider...\n");
-        auto tracer = cpp_tracer_provider->GetTracer("example");
-        auto span = tracer->StartSpan("hello-from-php-cpp");
-        span->End();
     }
 
     std::string TracerProvider::GetEnvVar(const char* var_name, const std::string& default_value = "") {

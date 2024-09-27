@@ -1,11 +1,11 @@
 #include "sdk_manager.h"
-#include "tracer.h"
-#include "tracer_provider.h"
-#include "span_builder.h"
-#include "span_context.h"
-#include "span.h"
-#include "scope.h"
-#include "context.h"
+#include "cpp/tracer.h"
+#include "cpp/tracer_provider.h"
+#include "cpp/span_builder.h"
+#include "cpp/span_context.h"
+#include "cpp/span.h"
+#include "cpp/scope.h"
+#include "cpp/context.h"
 #include "utils.h"
 #include "php.h"
 #include <Zend/zend_exceptions.h>
@@ -32,11 +32,6 @@ trace_sdk_SpanBuilder* tracer_create_span_builder(trace_sdk_Tracer* tracer, cons
     auto t = reinterpret_cast<trace_sdk::Tracer*>(tracer);
     auto cpp_span_builder = new trace_sdk::SpanBuilder(t->GetTracer(), span_name);
     return reinterpret_cast<trace_sdk_SpanBuilder*>(cpp_span_builder);
-}
-
-void tracer_do_something(trace_sdk_Tracer *tracer) {
-    //php_printf("(tracer manager)tracer_do_something\n");
-    reinterpret_cast<trace_sdk::Tracer*>(tracer)->DoSomething();
 }
 // end Tracer
 
@@ -188,11 +183,6 @@ trace_sdk_TracerProvider* tracer_provider_create() {
 void tracer_provider_destroy(trace_sdk_TracerProvider *provider) {
     //php_printf("(tracer provider manager)tracer_provider_destroy\n");
     delete reinterpret_cast<trace_sdk::TracerProvider*>(provider);
-}
-
-void tracer_provider_do_something(trace_sdk_TracerProvider *provider) {
-    //php_printf("(tracer provider manager)tracer_provider_do_something\n");
-    reinterpret_cast<trace_sdk::TracerProvider*>(provider)->DoSomething();
 }
 
 trace_sdk_Tracer *tracer_provider_get_tracer(trace_sdk_TracerProvider *provider) {

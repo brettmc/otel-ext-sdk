@@ -2,7 +2,7 @@
 #define OTEL_EXT_SDK_SPAN_BUILDER_CLASS_H
 
 #include "php.h"
-#include "opaque_types.h"
+#include "../opaque_types.h"
 
 typedef struct _php_span_builder_object {
     zend_object std;

@@ -1,7 +1,7 @@
 #include "span_context_class.h"
-#include "../opentelemetry_sdk_arginfo.h"
+#include "../../opentelemetry_sdk_arginfo.h"
 #include <Zend/zend_exceptions.h>
-#include "sdk_manager.h"
+#include "../sdk_manager.h"
 
 static zend_object_handlers span_context_object_handlers;
 zend_class_entry *span_context_ce;

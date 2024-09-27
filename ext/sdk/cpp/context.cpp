@@ -3,8 +3,8 @@
 #include <opentelemetry/nostd/variant.h>
 #include <string>
 #include <zend_exceptions.h>
-#include "span_class.h"
-#include "span_context_class.h"
+#include "../php/span_class.h"
+#include "../php/span_context_class.h"
 #include "span.h"
 #include "span_context.h"
 

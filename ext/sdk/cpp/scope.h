@@ -16,7 +16,7 @@ namespace trace_sdk
         void Test();
 
     private:
-        std::unique_ptr<opentelemetry::v1::trace::Scope> scope;
+        std::unique_ptr<opentelemetry::v1::trace::Scope> cpp_scope;
         bool detached = false;
     };
 } // namespace trace_sdk
