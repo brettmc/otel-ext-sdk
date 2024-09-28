@@ -1,5 +1,5 @@
 --TEST--
-Create a tracer from a provider
+otlp/http export
 --EXTENSIONS--
 opentelemetry_sdk
 --ENV--
