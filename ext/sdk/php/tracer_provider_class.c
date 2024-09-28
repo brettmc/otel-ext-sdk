@@ -5,6 +5,7 @@
 #include "../../opentelemetry_sdk_arginfo.h"
 
 static zend_object_handlers tracer_provider_object_handlers;
+zend_class_entry *tracer_provider_ce;
 
 zend_object* tracer_provider_create_object(zend_class_entry *class_type)
 {
@@ -70,10 +71,18 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, getTracer) {
     tracer_intern->cpp_tracer = cpp_tracer;
 }
 
+PHP_METHOD(OpenTelemetry_SDK_Trace_TracerProviderFactory, create) {
+    object_init_ex(return_value, tracer_provider_ce);
+    php_tracer_provider_object *intern = Z_TRACER_PROVIDER_OBJ_P(return_value);
+    intern->cpp_tracer_provider = tracer_provider_create();
+}
+
 void register_tracer_provider_class() {
-    zend_class_entry *ce;
-    ce = register_class_OpenTelemetry_SDK_Trace_TracerProvider();
-    ce->create_object = tracer_provider_create_object;
+    zend_class_entry *tracer_provider_interface_ce = register_class_OpenTelemetry_SDK_Trace_TracerProviderInterface();
+    zend_class_entry *tracer_provider_factory_ce = register_class_OpenTelemetry_SDK_Trace_TracerProviderFactory();
+
+    tracer_provider_ce = register_class_OpenTelemetry_SDK_Trace_TracerProvider(tracer_provider_interface_ce);
+    tracer_provider_ce->create_object = tracer_provider_create_object;
 
     memcpy(&tracer_provider_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     tracer_provider_object_handlers.free_obj = tracer_provider_free_obj;

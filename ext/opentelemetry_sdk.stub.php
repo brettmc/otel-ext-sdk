@@ -104,9 +104,19 @@ class Tracer
     public function spanBuilder(string $spanName): SpanBuilder {}
 }
 
-class TracerProvider
+interface TracerProviderInterface
+{
+    public function getTracer(string $name): Tracer;
+}
+
+class TracerProvider implements TracerProviderInterface
 {
     public function __construct() {}
     public function __destruct() {}
     public function getTracer(string $name): Tracer {}
+}
+
+class TracerProviderFactory
+{
+    public function create(): TracerProviderInterface;
 }

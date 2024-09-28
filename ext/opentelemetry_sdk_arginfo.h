@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: a4d7d47f550bee9152bcd826efc5efcf280c9107 */
+ * Stub hash: 6b236c9858ffec33fe370b3110bf485de2033121 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_ScopeInterface_detach, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -121,12 +121,17 @@ ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_Tra
 	ZEND_ARG_TYPE_INFO(0, spanName, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_TracerProviderInterface_getTracer, 0, 1, OpenTelemetry\\SDK\\Trace\\Tracer, 0)
+	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+
 #define arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider___construct arginfo_class_OpenTelemetry_SDK_Trace_ContextKey___destruct
 
 #define arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider___destruct arginfo_class_OpenTelemetry_SDK_Trace_ContextKey___destruct
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider_getTracer, 0, 1, OpenTelemetry\\SDK\\Trace\\Tracer, 0)
-	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+#define arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider_getTracer arginfo_class_OpenTelemetry_SDK_Trace_TracerProviderInterface_getTracer
+
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_TracerProviderFactory_create, 0, 0, OpenTelemetry\\SDK\\Trace\\TracerProviderInterface, 0)
 ZEND_END_ARG_INFO()
 
 
@@ -159,6 +164,7 @@ ZEND_METHOD(OpenTelemetry_SDK_Trace_Tracer, spanBuilder);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, __construct);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, __destruct);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, getTracer);
+ZEND_METHOD(OpenTelemetry_SDK_Trace_TracerProviderFactory, create);
 
 
 static const zend_function_entry class_OpenTelemetry_SDK_Trace_ScopeInterface_methods[] = {
@@ -262,10 +268,22 @@ static const zend_function_entry class_OpenTelemetry_SDK_Trace_Tracer_methods[] 
 };
 
 
+static const zend_function_entry class_OpenTelemetry_SDK_Trace_TracerProviderInterface_methods[] = {
+	ZEND_ABSTRACT_ME_WITH_FLAGS(OpenTelemetry_SDK_Trace_TracerProviderInterface, getTracer, arginfo_class_OpenTelemetry_SDK_Trace_TracerProviderInterface_getTracer, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
+	ZEND_FE_END
+};
+
+
 static const zend_function_entry class_OpenTelemetry_SDK_Trace_TracerProvider_methods[] = {
 	ZEND_ME(OpenTelemetry_SDK_Trace_TracerProvider, __construct, arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(OpenTelemetry_SDK_Trace_TracerProvider, __destruct, arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider___destruct, ZEND_ACC_PUBLIC)
 	ZEND_ME(OpenTelemetry_SDK_Trace_TracerProvider, getTracer, arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider_getTracer, ZEND_ACC_PUBLIC)
+	ZEND_FE_END
+};
+
+
+static const zend_function_entry class_OpenTelemetry_SDK_Trace_TracerProviderFactory_methods[] = {
+	ZEND_ME(OpenTelemetry_SDK_Trace_TracerProviderFactory, create, arginfo_class_OpenTelemetry_SDK_Trace_TracerProviderFactory_create, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
 
@@ -394,11 +412,32 @@ static zend_class_entry *register_class_OpenTelemetry_SDK_Trace_Tracer(void)
 	return class_entry;
 }
 
-static zend_class_entry *register_class_OpenTelemetry_SDK_Trace_TracerProvider(void)
+static zend_class_entry *register_class_OpenTelemetry_SDK_Trace_TracerProviderInterface(void)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "OpenTelemetry\\SDK\\Trace", "TracerProviderInterface", class_OpenTelemetry_SDK_Trace_TracerProviderInterface_methods);
+	class_entry = zend_register_internal_interface(&ce);
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_OpenTelemetry_SDK_Trace_TracerProvider(zend_class_entry *class_entry_OpenTelemetry_SDK_Trace_TracerProviderInterface)
 {
 	zend_class_entry ce, *class_entry;
 
 	INIT_NS_CLASS_ENTRY(ce, "OpenTelemetry\\SDK\\Trace", "TracerProvider", class_OpenTelemetry_SDK_Trace_TracerProvider_methods);
+	class_entry = zend_register_internal_class_ex(&ce, NULL);
+	zend_class_implements(class_entry, 1, class_entry_OpenTelemetry_SDK_Trace_TracerProviderInterface);
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_OpenTelemetry_SDK_Trace_TracerProviderFactory(void)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "OpenTelemetry\\SDK\\Trace", "TracerProviderFactory", class_OpenTelemetry_SDK_Trace_TracerProviderFactory_methods);
 	class_entry = zend_register_internal_class_ex(&ce, NULL);
 
 	return class_entry;
