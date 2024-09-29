@@ -12,7 +12,7 @@ namespace trace_sdk
     class Context
     {
     public:
-        Context();
+        //Context();
         Context(std::shared_ptr<opentelemetry::context::Context>);
         ~Context();
         //void Detach();

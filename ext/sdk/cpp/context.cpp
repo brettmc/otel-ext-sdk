@@ -10,10 +10,9 @@
 
 namespace trace_sdk
 {
-    Context::Context() {}
+    //Context::Context() {}
     Context::Context(std::shared_ptr<opentelemetry::context::Context> context) : cpp_context(context) {
-        //php_printf("(c++)Context::construct\n");
-        //php_printf("(c++)Context::construct (with context pointer)\n");
+        //php_printf("(c++)Context::construct (with context pointer): %p\n", cpp_context);
     }
 
     Context::~Context()
@@ -45,7 +44,7 @@ namespace trace_sdk
     }
 
     zval Context::GetValue(char *key) {
-        //php_printf("(c++)getting value for: %s\n", key);
+        //php_printf("(c++)getting value for: %s from context: %p\n", key, cpp_context);
         opentelemetry::v1::context::ContextValue v = cpp_context.get()->GetValue(key);
 
         return ToZval(v);

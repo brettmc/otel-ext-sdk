@@ -1,5 +1,6 @@
 #include "span_class.h"
 #include "scope_class.h"
+#include "context_class.h"
 #include "span_context_class.h"
 #include "../../opentelemetry_sdk_arginfo.h"
 #include <Zend/zend_exceptions.h>
@@ -83,11 +84,44 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Span, getContext) {
         RETURN_NULL();
     }
     trace_sdk_SpanContext *cpp_span_context = span_get_context(span_intern->cpp_span);
-    //php_printf("Span::getContext(end)\n");
 
     object_init_ex(return_value, span_context_ce);
     php_span_context_object *span_context_intern = Z_SPAN_CONTEXT_OBJ_P(return_value);
     span_context_intern->cpp_span_context = cpp_span_context;
+}
+
+PHP_METHOD(OpenTelemetry_SDK_Trace_Span, storeInContext) {
+    zval *context_zv;
+    zval *span = ZEND_THIS;
+
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+        Z_PARAM_OBJECT_OF_CLASS(context_zv, context_interface_ce)
+    ZEND_PARSE_PARAMETERS_END();
+
+    php_context_object *current_context_intern = Z_CONTEXT_OBJ_P(context_zv);
+    char *key = "_span"; //TODO
+    trace_sdk_Context *new_context = context_set_value(current_context_intern->cpp_context, key, span);
+
+    object_init_ex(return_value, context_ce);
+    php_context_object *new_context_intern = Z_CONTEXT_OBJ_P(return_value);
+    new_context_intern->cpp_context = new_context;
+}
+
+PHP_METHOD(OpenTelemetry_SDK_Trace_Span, fromContext) {
+    zval *context_zv;
+    zval *span = ZEND_THIS;
+    php_context_object *context_intern;
+
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+        Z_PARAM_OBJECT_OF_CLASS(context_zv, context_interface_ce)
+    ZEND_PARSE_PARAMETERS_END();
+
+    context_intern = Z_CONTEXT_OBJ_P(context_zv);
+    char *key = "_span";
+    object_init_ex(return_value, context_ce);
+    zval item = context_get_value(context_intern->cpp_context, key);
+    //todo: assert zval type?
+    RETURN_ZVAL(&item, 1, 0);
 }
 
 // Free the C++ Span when the PHP object is destroyed

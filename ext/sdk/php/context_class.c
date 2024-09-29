@@ -121,7 +121,6 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, with)
     zval_ptr_dtor(&method_name);
     zval_ptr_dtor(&retval);
 
-    //php_printf("The object is an instance of class: %s\n", ZSTR_VAL(ce->name));
     //return a new context with extra value applied
     php_context_object *internal = Z_CONTEXT_OBJ_P(getThis());
     trace_sdk_Context *new_context = context_set_value(internal->cpp_context, key_str, value);

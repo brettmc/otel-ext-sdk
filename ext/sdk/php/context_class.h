@@ -4,6 +4,7 @@
 #include <php.h>
 #include "../opaque_types.h"
 
+extern zend_class_entry *context_interface_ce;
 extern zend_class_entry *context_ce;
 extern zend_class_entry *context_key_ce;
 

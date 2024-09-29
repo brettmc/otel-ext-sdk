@@ -1,5 +1,5 @@
 --TEST--
-Get SpanContext from a span
+Span::storeInContext
 --EXTENSIONS--
 opentelemetry_sdk
 --ENV--
@@ -7,18 +7,30 @@ OTEL_TRACES_EXPORTER=console
 --FILE--
 <?php
 use OpenTelemetry\SDK\Trace\Context;
+use OpenTelemetry\SDK\Trace\ContextKey;
 use OpenTelemetry\SDK\Trace\TracerProvider;
+use OpenTelemetry\SDK\Trace\Span;
 
 $provider = new TracerProvider();
 $tracer = $provider->getTracer('test');
 
 $span = $tracer->spanBuilder("test")->startSpan();
-$span->storeInContext(Context::getCurrent());
+$ctx = $span->storeInContext(Context::getCurrent());
 unset($span);
+//var_dump($ctx->get(new ContextKey('_span')));
+
+$span = Span::fromContext($ctx);
+$span->updateName('updated');
+$span->end();
 
 //$scope = Context::storage()->scope();
 //$span = Span::fromContext($scope->context());
-$span = Span::fromContext(Context::getCurrent());
+//$span = Span::fromContext(Context::getCurrent());
 ?>
 --EXPECTF--
-foo
+{
+  name          : updated
+  trace_id      : %s
+  span_id       : %s
+%A
+}

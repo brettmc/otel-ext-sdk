@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 6b236c9858ffec33fe370b3110bf485de2033121 */
+ * Stub hash: 2b3ef8126cf9b678a078bb5cac411ccfe98590b7 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_ScopeInterface_detach, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -63,6 +63,10 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_activate arginfo_class_OpenTelemetry_SDK_Trace_Context_activate
 
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_storeInContext, 0, 1, OpenTelemetry\\SDK\\Trace\\ContextInterface, 0)
+	ZEND_ARG_OBJ_INFO(0, context, OpenTelemetry\\SDK\\Trace\\ContextInterface, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_updateName, 0, 1, OpenTelemetry\\SDK\\Trace\\SpanInterface, 0)
 	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
@@ -88,6 +92,12 @@ ZEND_END_ARG_INFO()
 #define arginfo_class_OpenTelemetry_SDK_Trace_Span_activate arginfo_class_OpenTelemetry_SDK_Trace_Context_activate
 
 #define arginfo_class_OpenTelemetry_SDK_Trace_Span_getContext arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_getContext
+
+#define arginfo_class_OpenTelemetry_SDK_Trace_Span_storeInContext arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_storeInContext
+
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_Span_fromContext, 0, 1, OpenTelemetry\\SDK\\Trace\\SpanInterface, 0)
+	ZEND_ARG_OBJ_INFO(0, context, OpenTelemetry\\SDK\\Trace\\ContextInterface, 0)
+ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_SpanBuilder_setAttribute, 0, 2, OpenTelemetry\\SDK\\Trace\\SpanBuilder, 0)
 	ZEND_ARG_TYPE_INFO(0, key, IS_STRING, 0)
@@ -153,6 +163,8 @@ ZEND_METHOD(OpenTelemetry_SDK_Trace_Span, setStatus);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_Span, end);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_Span, activate);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_Span, getContext);
+ZEND_METHOD(OpenTelemetry_SDK_Trace_Span, storeInContext);
+ZEND_METHOD(OpenTelemetry_SDK_Trace_Span, fromContext);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_SpanBuilder, setAttribute);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_SpanBuilder, setAttributes);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_SpanBuilder, setSpanKind);
@@ -232,6 +244,7 @@ static const zend_function_entry class_OpenTelemetry_SDK_Trace_SpanContext_metho
 
 static const zend_function_entry class_OpenTelemetry_SDK_Trace_SpanInterface_methods[] = {
 	ZEND_ABSTRACT_ME_WITH_FLAGS(OpenTelemetry_SDK_Trace_SpanInterface, activate, arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_activate, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
+	ZEND_ABSTRACT_ME_WITH_FLAGS(OpenTelemetry_SDK_Trace_SpanInterface, storeInContext, arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_storeInContext, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
 	ZEND_ABSTRACT_ME_WITH_FLAGS(OpenTelemetry_SDK_Trace_SpanInterface, updateName, arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_updateName, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
 	ZEND_ABSTRACT_ME_WITH_FLAGS(OpenTelemetry_SDK_Trace_SpanInterface, setStatus, arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_setStatus, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
 	ZEND_ABSTRACT_ME_WITH_FLAGS(OpenTelemetry_SDK_Trace_SpanInterface, end, arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_end, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
@@ -246,6 +259,8 @@ static const zend_function_entry class_OpenTelemetry_SDK_Trace_Span_methods[] = 
 	ZEND_ME(OpenTelemetry_SDK_Trace_Span, end, arginfo_class_OpenTelemetry_SDK_Trace_Span_end, ZEND_ACC_PUBLIC)
 	ZEND_ME(OpenTelemetry_SDK_Trace_Span, activate, arginfo_class_OpenTelemetry_SDK_Trace_Span_activate, ZEND_ACC_PUBLIC)
 	ZEND_ME(OpenTelemetry_SDK_Trace_Span, getContext, arginfo_class_OpenTelemetry_SDK_Trace_Span_getContext, ZEND_ACC_PUBLIC)
+	ZEND_ME(OpenTelemetry_SDK_Trace_Span, storeInContext, arginfo_class_OpenTelemetry_SDK_Trace_Span_storeInContext, ZEND_ACC_PUBLIC)
+	ZEND_ME(OpenTelemetry_SDK_Trace_Span, fromContext, arginfo_class_OpenTelemetry_SDK_Trace_Span_fromContext, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_FE_END
 };
 

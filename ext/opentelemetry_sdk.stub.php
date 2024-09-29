@@ -65,7 +65,7 @@ class SpanContext implements SpanContextInterface
 interface SpanInterface
 {
     public function activate(): ScopeInterface;
-    //public function storeInContext(ContextInterface $context): ContextInterface;
+    public function storeInContext(ContextInterface $context): ContextInterface;
     public function updateName(string $name): SpanInterface;
     public function setStatus(string $code, ?string $description = null): SpanInterface;
     public function end(?int $endTimestamp = null): void;
@@ -86,6 +86,9 @@ class Span implements SpanInterface
     //public function addLink(SpanContextInterface $context, iterable $attribute = []): SpanInterface
     public function activate(): ScopeInterface {}
     public function getContext(): SpanContextInterface {}
+    public function storeInContext(ContextInterface $context): ContextInterface;
+    public static function fromContext(ContextInterface $context): SpanInterface;
+    //public static function getInvalid(): SpanInterface;
 }
 
 class SpanBuilder
