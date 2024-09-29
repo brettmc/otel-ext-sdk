@@ -131,6 +131,7 @@ zval context_get_value(trace_sdk_Context *context, char *key) {
 
 // SpanBuilder
 void span_builder_destroy(trace_sdk_SpanBuilder *span_builder) {
+    //php_printf("span_builder_destroy\n");
     delete reinterpret_cast<trace_sdk::SpanBuilder*>(span_builder);
 }
 

@@ -15,6 +15,7 @@ var_dump($builder);
 $builder
     ->setSpanKind(1);
 $span = $builder->startSpan();
+unset($builder);
 var_dump($span);
 $span->end();
 ?>

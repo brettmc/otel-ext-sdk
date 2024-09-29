@@ -6,7 +6,7 @@
 #include "../../opentelemetry_sdk_arginfo.h"
 
 zend_class_entry *span_builder_ce;
-zend_object_handlers span_builder_object_handlers;
+static zend_object_handlers span_builder_object_handlers;
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_SpanBuilder, setSpanKind)
 {
@@ -138,6 +138,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_SpanBuilder, startSpan)
 // Object handlers for SpanBuilder
 void span_builder_free_obj(zend_object *object)
 {
+    //php_printf("span_builder_free_obj\n");
     php_span_builder_object *intern = (php_span_builder_object *)((char *)(object) - XtOffsetOf(php_span_builder_object, std));
 
     if (intern->cpp_span_builder) {
@@ -150,12 +151,13 @@ void span_builder_free_obj(zend_object *object)
 
 zend_object *span_builder_create_object(zend_class_entry *ce)
 {
+    //php_printf("span_builder_create_obj\n");
     php_span_builder_object *intern = (php_span_builder_object *)ecalloc(1, sizeof(php_span_builder_object));
 
     zend_object_std_init(&intern->std, ce);
     object_properties_init(&intern->std, ce);
 
-    intern->std.handlers = &std_object_handlers;
+    intern->std.handlers = &span_builder_object_handlers;
 
     return &intern->std;
 }

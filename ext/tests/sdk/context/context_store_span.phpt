@@ -18,7 +18,7 @@ $key = new ContextKey('my_span');
 $ctx = Context::getCurrent()->with($key, $tracer->spanBuilder("parent")->startSpan());
 
 $span = $ctx->get($key);
-var_dump($span);
+var_dump(get_class($span));
 $span->updateName('updated');
 $span->end();
 ?>
