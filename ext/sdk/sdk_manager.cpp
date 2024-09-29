@@ -67,6 +67,9 @@ trace_sdk_SpanContext *span_get_context(trace_sdk_Span *span) {
 // end Span
 
 // SpanContext
+void span_context_destroy(trace_sdk_SpanContext *context) {
+    delete reinterpret_cast<trace_sdk::SpanContext*>(context);
+}
 char *span_context_get_trace_id(trace_sdk_SpanContext *context) {
     auto sc = reinterpret_cast<trace_sdk::SpanContext*>(context);
     std::string trace_id = sc->GetTraceId();
@@ -99,7 +102,6 @@ int scope_detach(trace_sdk_Scope *scope_ptr) {
     //delete reinterpret_cast<trace_sdk::Scope*>(scope);
     trace_sdk::Scope *scope = reinterpret_cast<trace_sdk::Scope*>(scope_ptr);
     scope->Detach();
-    //scope->Test();
     return 0;
 }
 // end Scope
@@ -110,10 +112,6 @@ trace_sdk_Context *context_get_current() {
     return reinterpret_cast<trace_sdk_Context*>(context);
 }
 
-void context_test(/*trace_sdk_Context *context_ptr*/) {
-    //trace_sdk::Context *context = reinterpret_cast<trace_sdk::Context*>(context_ptr);
-    trace_sdk::Context::Test();
-}
 void context_destroy(trace_sdk_Context *context) {
     trace_sdk::Context *cpp_context = reinterpret_cast<trace_sdk::Context*>(context);
     delete cpp_context;

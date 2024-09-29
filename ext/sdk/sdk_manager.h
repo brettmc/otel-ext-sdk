@@ -19,6 +19,7 @@ trace_sdk_Scope *span_activate(trace_sdk_Span *span);
 trace_sdk_SpanContext * span_get_context(trace_sdk_Span *span);
 
 // SpanContext
+void span_context_destroy(trace_sdk_SpanContext *context);
 char *span_context_get_trace_id(trace_sdk_SpanContext *context);
 char *span_context_get_span_id(trace_sdk_SpanContext *context);
 uint8_t span_context_get_trace_flags(trace_sdk_SpanContext *context);
@@ -31,7 +32,6 @@ void scope_destroy(trace_sdk_Scope *scope);
 
 // Context
 trace_sdk_Context *context_get_current();
-void context_test(/*trace_sdk_Context *context*/);
 trace_sdk_Context *context_set_value(trace_sdk_Context *context, char *key, zval *value);
 zval context_get_value(trace_sdk_Context *context, char *key);
 void context_destroy(trace_sdk_Context *context);

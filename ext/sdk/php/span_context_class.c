@@ -71,7 +71,7 @@ void span_context_free_obj(zend_object *object)
     php_span_context_object *intern = (php_span_context_object *)((char *)(object) - XtOffsetOf(php_span_context_object, std));
 
     if (intern->cpp_span_context) {
-        //span_context_destroy(intern->cpp_span_context);  // Destroy the C++ Span object
+        span_context_destroy(intern->cpp_span_context);  // Destroy the C++ Span object
         intern->cpp_span_context = NULL;
     }
 
