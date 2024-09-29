@@ -28,7 +28,7 @@ void context_free_obj(zend_object *object)
 // Create a new PHP Context object
 zend_object *context_create_object(zend_class_entry *ce)
 {
-    php_context_object *intern = (php_context_object *)ecalloc(1, sizeof(php_context_object) + zend_object_properties_size(ce) + 16);
+    php_context_object *intern = (php_context_object *)ecalloc(1, sizeof(php_context_object));
 
     zend_object_std_init(&intern->std, ce);
     object_properties_init(&intern->std, ce);
@@ -150,9 +150,9 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, get)
     } else {
         php_printf("Failed to call method 'name'.\n");
     }
+    zval item = context_get_value(internal->cpp_context, key_str);
     zval_ptr_dtor(&method_name);
     zval_ptr_dtor(&retval);
-    zval item = context_get_value(internal->cpp_context, key_str);
     RETURN_ZVAL(&item, 1, 0);
 }
 

@@ -12,7 +12,7 @@ zend_class_entry *tracer_ce;
 zend_object* tracer_create_object(zend_class_entry *class_type)
 {
     //php_printf("(php)tracer_create_object\n");
-    php_tracer_object *intern = (php_tracer_object *) ecalloc(1, sizeof(php_tracer_object) + zend_object_properties_size(class_type) + 16);
+    php_tracer_object *intern = (php_tracer_object *) ecalloc(1, sizeof(php_tracer_object));
 
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);

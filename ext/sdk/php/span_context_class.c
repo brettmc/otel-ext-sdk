@@ -81,7 +81,7 @@ void span_context_free_obj(zend_object *object)
 // Create a new PHP Span object
 zend_object *span_context_create_object(zend_class_entry *ce)
 {
-    php_span_context_object *intern = (php_span_context_object *)ecalloc(1, sizeof(php_span_context_object) + zend_object_properties_size(ce) - 20);
+    php_span_context_object *intern = (php_span_context_object *)ecalloc(1, sizeof(php_span_context_object));
 
     zend_object_std_init(&intern->std, ce);
     object_properties_init(&intern->std, ce);

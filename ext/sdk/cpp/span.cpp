@@ -6,11 +6,11 @@ namespace trace_sdk {
     Span::Span(opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Span> span) : cpp_span(span) {
         auto context = cpp_span->GetContext();
 
-        char tbuf[32], sbuf[16];
-        context.trace_id().ToLowerBase16(tbuf);
-        context.span_id().ToLowerBase16(sbuf);
-        std::string trace_id = std::string(tbuf, sizeof(tbuf));
-        std::string span_id = std::string(sbuf, sizeof(sbuf));
+        //char tbuf[32], sbuf[16];
+        //context.trace_id().ToLowerBase16(tbuf);
+        //context.span_id().ToLowerBase16(sbuf);
+        //std::string trace_id = std::string(tbuf, sizeof(tbuf));
+        //std::string span_id = std::string(sbuf, sizeof(sbuf));
         //id = span_id;
         //php_printf("(c++)Span created (with cpp span): %s\n", span_id.c_str());
         //php_printf("Trace ID: %s\n", t);
