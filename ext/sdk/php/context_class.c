@@ -59,7 +59,6 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, __destruct)
 PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, name)
 {
     php_context_key_object *obj = Z_CONTEXT_KEY_OBJ_P(getThis());
-    //php_printf("refcount: %d\n", GC_REFCOUNT(&obj->std));
     RETURN_STRING(ZSTR_VAL(obj->name));
 }
 
@@ -100,60 +99,38 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, activate)
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_Context, with)
 {
-    zval *key;
+    zval *zv_key;
     zval *value;
     ZEND_PARSE_PARAMETERS_START(2, 2) // Expecting exactly 2 parameters
-        Z_PARAM_OBJECT_OF_CLASS(key, context_key_interface_ce) // First parameter: object
+        Z_PARAM_OBJECT_OF_CLASS(zv_key, context_key_interface_ce) // First parameter: object
         Z_PARAM_ZVAL(value) // Second parameter: mixed type
     ZEND_PARSE_PARAMETERS_END();
 
-    zval retval; // Variable to hold the return value
-    zval method_name;
-    ZVAL_STRING(&method_name, "name");
-    char *key_str;
-
-    // Call the method
-    if (call_user_function(EG(function_table), key, &method_name, &retval, 0, NULL) == SUCCESS) {
-        key_str = estrdup(ZSTR_VAL(Z_STR(retval)));
-    } else {
-        php_printf("Failed to call method 'name'.\n");
-    }
-    zval_ptr_dtor(&method_name);
-    zval_ptr_dtor(&retval);
+    php_context_key_object *context_key_obj = Z_CONTEXT_KEY_OBJ_P(zv_key);
+    char *key = ZSTR_VAL(context_key_obj->name);
 
     //return a new context with extra value applied
     php_context_object *internal = Z_CONTEXT_OBJ_P(getThis());
-    trace_sdk_Context *new_context = context_set_value(internal->cpp_context, key_str, value);
+    trace_sdk_Context *new_context = context_set_value(internal->cpp_context, key, value);
 
     object_init_ex(return_value, context_ce);
     php_context_object *context_intern = Z_CONTEXT_OBJ_P(return_value);
     context_intern->cpp_context = new_context;
-    efree(key_str);
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_Context, get)
 {
     php_context_object *internal = Z_CONTEXT_OBJ_P(getThis());
-    zval *key;
+    zval *zv_key;
     ZEND_PARSE_PARAMETERS_START(1, 1)
-        Z_PARAM_OBJECT_OF_CLASS(key, context_key_interface_ce)
+        Z_PARAM_OBJECT_OF_CLASS(zv_key, context_key_interface_ce)
     ZEND_PARSE_PARAMETERS_END();
 
-    char *key_str;
-    zval retval; // Variable to hold the return value
-    zval method_name;
-    ZVAL_STRING(&method_name, "name");
+    php_context_key_object *context_key_obj = Z_CONTEXT_KEY_OBJ_P(zv_key);
+    char *key = ZSTR_VAL(context_key_obj->name);
 
-    // Call the method
-    if (call_user_function(EG(function_table), key, &method_name, &retval, 0, NULL) == SUCCESS) {
-        key_str = ZSTR_VAL(Z_STR(retval));
-    } else {
-        php_printf("Failed to call method 'name'.\n");
-    }
-    zval item = context_get_value(internal->cpp_context, key_str);
-    zval_ptr_dtor(&method_name);
-    zval_ptr_dtor(&retval);
-    RETURN_ZVAL(&item, 1, 0);
+    zval value = context_get_value(internal->cpp_context, key);
+    RETURN_ZVAL(&value, 1, 0);
 }
 
 // Initialize the classes
