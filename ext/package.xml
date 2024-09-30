@@ -24,46 +24,56 @@
   <notes>Experimental OpenTelemetry SDK</notes>
   <contents>
     <dir baseinstalldir="/" name="/">
-      <file baseinstalldir="/" name="config.m4" role="src"/>
-      <file baseinstalldir="/" name="config.w32" role="src"/>
-      <file baseinstalldir="/" name="opentelemetry_sdk.c" role="src"/>
-      <file baseinstalldir="/" name="opentelemetry_sdk.stub.php" role="src"/>
-      <file baseinstalldir="/" name="opentelemetry_sdk_arginfo.h" role="src"/>
-      <file baseinstalldir="/" name="php_opentelemetry_sdk.h" role="src"/>
+      <file name="config.m4" role="src"/>
+      <file name="config.w32" role="src"/>
+      <file name="opentelemetry_sdk.c" role="src"/>
+      <file name="opentelemetry_sdk.stub.php" role="src"/>
+      <file name="opentelemetry_sdk_arginfo.h" role="src"/>
+      <file name="php_opentelemetry_sdk.h" role="src"/>
+      <dir name="sdk">
+        <file name="opaque_types.h" role="src"/>
+        <file name="sdk_manager.cpp" role="src"/>
+        <file name="sdk_manager.h" role="src"/>
+        <file name="utils.cpp" role="src"/>
+        <file name="utils.h" role="src"/>
+        <dir name="cpp">
+          <file name="context.cpp" role="src"/>
+          <file name="context.h" role="src"/>
+          <file name="scope.cpp" role="src"/>
+          <file name="scope.h" role="src"/>
+          <file name="scope.h" role="src"/>
+          <file name="span.cpp" role="src"/>
+          <file name="span.h" role="src"/>
+          <file name="span_builder.cpp" role="src"/>
+          <file name="span_builder.h" role="src"/>
+          <file name="span_context.cpp" role="src"/>
+          <file name="span_context.h" role="src"/>
+          <file name="tracer.cpp" role="src"/>
+          <file name="tracer.h" role="src"/>
+          <file name="tracer_provider.cpp" role="src"/>
+          <file name="tracer_provider.h" role="src"/>
+        </dir>
+        <dir name="php">
+          <file name="context_class.c" role="src"/>
+          <file name="context_class.h" role="src"/>
+          <file name="scope_class.c" role="src"/>
+          <file name="scope_class.h" role="src"/>
+          <file name="span_builder_class.c" role="src"/>
+          <file name="span_builder_class.h" role="src"/>
+          <file name="span_class.c" role="src"/>
+          <file name="span_class.h" role="src"/>
+          <file name="span_context_class.c" role="src"/>
+          <file name="span_context_class.h" role="src"/>
+          <file name="tracer_class.c" role="src"/>
+          <file name="tracer_class.h" role="src"/>
+          <file name="tracer_provider_class.c" role="src"/>
+          <file name="tracer_provider_class.h" role="src"/>
+        </dir>
+      </dir>
       <dir name="tests">
         <file name="001.phpt" role="test"/>
         <file name="phpinfo.phpt" role="test"/>
         <file name="001.phpt" role="test"/>
-        <dir name="sdk">
-          <dir name="tracer">
-            <file name="tracer_provider_factory.phpt" role="test"/>
-            <file name="tracer_provider_resource_attributes.phpt" role="test"/>
-            <file name="tracer_provider_noop_export.phpt" role="test"/>
-            <file name="tracer_provider.phpt" role="test"/>
-            <file name="get_tracer.phpt" role="test"/>
-            <file name="tracer_provider_otlp_export.phpt" role="test"/>
-            <file name="tracer_provider_bsp.phpt" role="test"/>
-          </dir>
-          <dir name="span">
-            <file name="span_store_in_context.phpt" role="test"/>
-            <file name="span_context_interface.phpt" role="test"/>
-            <file name="span_update.phpt" role="test"/>
-            <file name="span_activate.phpt" role="test"/>
-            <file name="span_context.phpt" role="test"/>
-          </dir>
-          <dir name="span_builder">
-            <file name="span_builder_create_many.phpt" role="test"/>
-            <file name="span_builder_all.phpt" role="test"/>
-            <file name="span_builder.phpt" role="test"/>
-          </dir>
-          <dir name="context">
-            <file name="context_store.phpt" role="test"/>
-            <file name="context_store_span.phpt" role="test"/>
-            <file name="context_key.phpt" role="test"/>
-            <file name="context.phpt" role="test"/>
-            <file name="context_store_span_context.phpt" role="test"/>
-          </dir>
-        </dir>
       </dir>
     </dir>
   </contents>

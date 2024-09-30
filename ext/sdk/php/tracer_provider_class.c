@@ -83,7 +83,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_TracerProviderFactory, create) {
 
 void register_tracer_provider_class() {
     zend_class_entry *tracer_provider_interface_ce = register_class_OpenTelemetry_SDK_Trace_TracerProviderInterface();
-    zend_class_entry *tracer_provider_factory_ce = register_class_OpenTelemetry_SDK_Trace_TracerProviderFactory();
+    register_class_OpenTelemetry_SDK_Trace_TracerProviderFactory();
 
     tracer_provider_ce = register_class_OpenTelemetry_SDK_Trace_TracerProvider(tracer_provider_interface_ce);
     tracer_provider_ce->create_object = tracer_provider_create_object;
