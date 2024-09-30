@@ -22,6 +22,13 @@ if test "$PHP_OPENTELEMETRY_SDK" != "no"; then
   dnl Write more examples of tests here...
 
   dnl Remove this code block if the library does not support pkg-config.
+    dnl libopentelemetry
+    PKG_CHECK_MODULES([OPENTELEMETRY], [opentelemetry_api opentelemetry_trace opentelemetry_common opentelemetry_resources opentelemetry_version opentelemetry_exporter_otlp_http opentelemetry_exporter_ostream >= 1.16])
+    PHP_ADD_INCLUDE([$OPENTELEMETRY_CFLAGS])
+    PHP_ADD_LIBRARY_WITH_PATH([$OPENTELEMETRY_LIBS], $OPENTELEMETRY_LIBDIR)
+    dnl the line above _should_ add linker flags...
+    LDFLAGS="$LDFLAGS $OPENTELEMETRY_LIBS"
+
     dnl libprotobuf
     PKG_CHECK_MODULES([PROTOBUF], [protobuf >= 3.21])
     PHP_ADD_INCLUDE([$PROTOBUF_CFLAGS])
@@ -44,22 +51,5 @@ if test "$PHP_OPENTELEMETRY_SDK" != "no"; then
 
   OTEL_SDK_SOURCES=`find $srcdir/sdk -name '*.c*' | sed "s|^$srcdir/||"`
 
-  EXT_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/ext/src/http -name '*.cc' | sed "s|^$srcdir/||"`
-  SDK_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/sdk/src -name '*.cc' | sed "s|^$srcdir/||" | grep -v 'fork_windows.cc'`
-  OSTREAM_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/exporters/ostream/src -name '*.cc' | sed "s|^$srcdir/||"`
-  OTLP_SOURCES=`find $srcdir/third_party/opentelemetry-cpp/exporters/otlp/src -name '*.cc' | sed "s|^$srcdir/||" | grep -v grpc`
-  PROTO_SOURCES=`find $srcdir/third_party/proto -name '*.cc' | sed "s|^$srcdir/||"`
-  THIRD_PARTY_SOURCES="$SDK_SOURCES $OSTREAM_SOURCES $EXT_SOURCES $OTLP_SOURCES $PROTO_SOURCES"
-
-  PHP_ADD_INCLUDE([third_party/json/single_include])
-  PHP_ADD_INCLUDE([third_party/proto])
-  PHP_ADD_INCLUDE([third_party/opentelemetry-cpp/api/include])
-  PHP_ADD_INCLUDE([third_party/opentelemetry-cpp/ext/include])
-  PHP_ADD_INCLUDE([third_party/opentelemetry-cpp/sdk/include])
-  PHP_ADD_INCLUDE([third_party/opentelemetry-cpp/sdk])
-  PHP_ADD_INCLUDE([third_party/opentelemetry-cpp/exporters/ostream/include])
-  PHP_ADD_INCLUDE([third_party/opentelemetry-cpp/ext/include])
-  PHP_ADD_INCLUDE([third_party/opentelemetry-cpp/exporters/otlp/include])
-
-  PHP_NEW_EXTENSION(opentelemetry_sdk, $THIRD_PARTY_SOURCES $OTEL_SDK_SOURCES opentelemetry_sdk.c, $ext_shared,, "-g -O0 -Wl,-v -Wall -Wextra -Werror -Wno-unused-parameter")
+  PHP_NEW_EXTENSION(opentelemetry_sdk, $OTEL_SDK_SOURCES opentelemetry_sdk.c, $ext_shared,, "-g -O0 -Wl,-v -Wall -Wextra -Werror -Wno-unused-parameter")
 fi

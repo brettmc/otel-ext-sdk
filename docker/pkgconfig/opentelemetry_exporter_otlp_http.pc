@@ -1,0 +1,14 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: OpenTelemetry SDK - otlp/http exporter
+Description: OpenTelemetry otlp/http exporter
+Version: 1.16.1
+
+Libs: -L${libdir} -lopentelemetry_exporter_otlp_http -lopentelemetry_exporter_otlp_http_client
+Cflags: -I${includedir} 
