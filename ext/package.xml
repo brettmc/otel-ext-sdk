@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.9.5" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+  <name>opentelemetry_sdk</name>
+  <channel>pecl.php.net</channel>
+  <summary>OpenTelemetry SDK</summary>
+  <description>https://github.com/brettmc/opentelemtry_sdk</description>
+  <lead>
+    <name>Brett McBride</name>
+    <user>brettmc</user>
+    <email>brett@example.com</email>
+    <active>yes</active>
+  </lead>
+  <date>2024-09-30</date>
+  <time>00:03:28</time>
+  <version>
+    <release>0.0.1</release>
+    <api>0.0.1</api>
+  </version>
+  <stability>
+    <release>beta</release>
+    <api>beta</api>
+  </stability>
+  <license uri="https://opensource.org/license/apache-2-0/" filesource="LICENSE">Apache 2.0</license>
+  <notes>Experimental OpenTelemetry SDK</notes>
+  <contents>
+    <dir baseinstalldir="/" name="/">
+      <file baseinstalldir="/" name="config.m4" role="src"/>
+      <file baseinstalldir="/" name="config.w32" role="src"/>
+      <file baseinstalldir="/" name="opentelemetry_sdk.c" role="src"/>
+      <file baseinstalldir="/" name="opentelemetry_sdk.stub.php" role="src"/>
+      <file baseinstalldir="/" name="opentelemetry_sdk_arginfo.h" role="src"/>
+      <file baseinstalldir="/" name="php_opentelemetry_sdk.h" role="src"/>
+      <dir name="tests">
+        <file name="001.phpt" role="test"/>
+        <file name="phpinfo.phpt" role="test"/>
+        <file name="001.phpt" role="test"/>
+        <dir name="sdk">
+          <dir name="tracer">
+            <file name="tracer_provider_factory.phpt" role="test"/>
+            <file name="tracer_provider_resource_attributes.phpt" role="test"/>
+            <file name="tracer_provider_noop_export.phpt" role="test"/>
+            <file name="tracer_provider.phpt" role="test"/>
+            <file name="get_tracer.phpt" role="test"/>
+            <file name="tracer_provider_otlp_export.phpt" role="test"/>
+            <file name="tracer_provider_bsp.phpt" role="test"/>
+          </dir>
+          <dir name="span">
+            <file name="span_store_in_context.phpt" role="test"/>
+            <file name="span_context_interface.phpt" role="test"/>
+            <file name="span_update.phpt" role="test"/>
+            <file name="span_activate.phpt" role="test"/>
+            <file name="span_context.phpt" role="test"/>
+          </dir>
+          <dir name="span_builder">
+            <file name="span_builder_create_many.phpt" role="test"/>
+            <file name="span_builder_all.phpt" role="test"/>
+            <file name="span_builder.phpt" role="test"/>
+          </dir>
+          <dir name="context">
+            <file name="context_store.phpt" role="test"/>
+            <file name="context_store_span.phpt" role="test"/>
+            <file name="context_key.phpt" role="test"/>
+            <file name="context.phpt" role="test"/>
+            <file name="context_store_span_context.phpt" role="test"/>
+          </dir>
+        </dir>
+      </dir>
+    </dir>
+  </contents>
+  <dependencies>
+    <required>
+      <php>
+        <min>8.1.0</min>
+      </php>
+      <pearinstaller>
+        <min>1.4.0</min>
+      </pearinstaller>
+    </required>
+  </dependencies>
+  <providesextension>opentelemetry_sdk</providesextension>
+  <extsrcrelease/>
+  <changelog>
+  </changelog>
+</package>

@@ -1,5 +1,5 @@
 --TEST--
-Get a span builder
+Update a span after it is created and before it ends
 --EXTENSIONS--
 opentelemetry_sdk
 --ENV--
@@ -11,21 +11,15 @@ use OpenTelemetry\SDK\Trace\TracerProvider;
 $provider = new TracerProvider();
 $tracer = $provider->getTracer('test');
 $builder = $tracer->spanBuilder("test-span");
-var_dump($builder);
-$builder
-    ->setSpanKind(1);
 $span = $builder->startSpan();
-unset($builder);
-var_dump($span);
+$span
+    ->updateName('updated-name')
+    ->setStatus('Ok', 'status-description');
 $span->end();
 ?>
 --EXPECTF--
-object(OpenTelemetry\SDK\Trace\SpanBuilder)#%d (0) {
-}
-object(OpenTelemetry\SDK\Trace\Span)#%d (0) {
-}
 {
-  name          : test-span
+  name          : updated-name
   trace_id      : %s
   span_id       : %s
   tracestate    :%s
@@ -33,8 +27,8 @@ object(OpenTelemetry\SDK\Trace\Span)#%d (0) {
   start         : %d
   duration      : %d
   description   :%s
-  span kind     : Server
-  status        : Unset
+  span kind     : Internal
+  status        : Ok
   attributes    :%s
   events        :%s
   links         :%s

@@ -8,10 +8,14 @@
 #include "ext/standard/info.h"
 #include "php_opentelemetry_sdk.h"
 #include "opentelemetry_sdk_arginfo.h"
-#include "sdk/tracer_provider_class.h"
-#include "sdk/tracer_class.h"
-#include "sdk/span_class.h"
-#include "sdk/span_builder_class.h"
+#include "sdk/php/tracer_provider_class.h"
+#include "sdk/php/tracer_class.h"
+#include "sdk/php/span_class.h"
+#include "sdk/php/scope_class.h"
+#include "sdk/php/context_class.h"
+#include "sdk/php/span_context_class.h"
+#include "sdk/php/span_builder_class.h"
+#include <opentelemetry/version.h>
 
 /* For compatibility with older PHP versions */
 #ifndef ZEND_PARSE_PARAMETERS_NONE
@@ -19,33 +23,6 @@
 	ZEND_PARSE_PARAMETERS_START(0, 0) \
 	ZEND_PARSE_PARAMETERS_END()
 #endif
-
-/* {{{ void test1() */
-PHP_FUNCTION(test1)
-{
-	ZEND_PARSE_PARAMETERS_NONE();
-
-	php_printf("The extension %s is loaded and working!\r\n", "opentelemetry_sdk");
-}
-/* }}} */
-
-/* {{{ string test2( [ string $var ] ) */
-PHP_FUNCTION(test2)
-{
-	char *var = "World";
-	size_t var_len = sizeof("World") - 1;
-	zend_string *retval;
-
-	ZEND_PARSE_PARAMETERS_START(0, 1)
-		Z_PARAM_OPTIONAL
-		Z_PARAM_STRING(var, var_len)
-	ZEND_PARSE_PARAMETERS_END();
-
-	retval = strpprintf(0, "Hello %s", var);
-
-	RETURN_STR(retval);
-}
-/* }}}*/
 
 PHP_INI_BEGIN()
 PHP_INI_END()
@@ -63,11 +40,13 @@ PHP_RINIT_FUNCTION(opentelemetry_sdk)
 
 PHP_MINIT_FUNCTION(opentelemetry_sdk) {
     REGISTER_INI_ENTRIES();
+    register_scope_class();
     register_span_class();
     register_span_builder_class();
     register_tracer_provider_class();
     register_tracer_class();
-    register_class_OpenTelemetry_SDK_Trace_SpanContextInterface();
+    register_span_context_class();
+    register_context_class();
 
     return SUCCESS;
 }
@@ -84,6 +63,7 @@ PHP_MINFO_FUNCTION(opentelemetry_sdk)
 	php_info_print_table_start();
 	php_info_print_table_row(2, "opentelemetry_sdk support", "enabled");
     php_info_print_table_row(2, "extension version", PHP_OPENTELEMETRY_SDK_VERSION);
+    php_info_print_table_row(2, "opentelemetry-cpp version", OPENTELEMETRY_VERSION);
 	php_info_print_table_end();
 }
 /* }}} */
