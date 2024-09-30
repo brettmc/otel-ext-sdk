@@ -191,6 +191,10 @@ trace_sdk_Tracer *tracer_provider_get_tracer(trace_sdk_TracerProvider *provider)
     //php_printf("(tracer provider manager)tracer_provider_get_tracer::post\n");
     return reinterpret_cast<trace_sdk_Tracer*>(tracer);
 }
+
+bool tracer_provider_shutdown(trace_sdk_TracerProvider *provider) {
+    return reinterpret_cast<trace_sdk::TracerProvider*>(provider)->Shutdown();
+}
 // end TracerProvider
 
 //end extern C

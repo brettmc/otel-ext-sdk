@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 2b3ef8126cf9b678a078bb5cac411ccfe98590b7 */
+ * Stub hash: 4e5cff5743661ea687b540dc4c2a606a20aaa20a */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_ScopeInterface_detach, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -141,6 +141,8 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider_getTracer arginfo_class_OpenTelemetry_SDK_Trace_TracerProviderInterface_getTracer
 
+#define arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider_shutdown arginfo_class_OpenTelemetry_SDK_Trace_SpanContextInterface_isRemote
+
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_TracerProviderFactory_create, 0, 0, OpenTelemetry\\SDK\\Trace\\TracerProviderInterface, 0)
 ZEND_END_ARG_INFO()
 
@@ -176,6 +178,7 @@ ZEND_METHOD(OpenTelemetry_SDK_Trace_Tracer, spanBuilder);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, __construct);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, __destruct);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, getTracer);
+ZEND_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, shutdown);
 ZEND_METHOD(OpenTelemetry_SDK_Trace_TracerProviderFactory, create);
 
 
@@ -293,6 +296,7 @@ static const zend_function_entry class_OpenTelemetry_SDK_Trace_TracerProvider_me
 	ZEND_ME(OpenTelemetry_SDK_Trace_TracerProvider, __construct, arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(OpenTelemetry_SDK_Trace_TracerProvider, __destruct, arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider___destruct, ZEND_ACC_PUBLIC)
 	ZEND_ME(OpenTelemetry_SDK_Trace_TracerProvider, getTracer, arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider_getTracer, ZEND_ACC_PUBLIC)
+	ZEND_ME(OpenTelemetry_SDK_Trace_TracerProvider, shutdown, arginfo_class_OpenTelemetry_SDK_Trace_TracerProvider_shutdown, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
 

@@ -75,6 +75,11 @@ namespace trace_sdk {
         }
     }
 
+    bool TracerProvider::Shutdown() {
+        cpp_tracer_provider->Shutdown();
+        return true;
+    }
+
     std::string TracerProvider::GetEnvVar(const char* var_name, const std::string& default_value = "") {
         const char* value = std::getenv(var_name); // Get the environment variable
         if (value != nullptr) {

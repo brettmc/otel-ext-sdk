@@ -52,6 +52,10 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, __destruct) {
         zend_throw_exception(NULL, "TracerProvider is not initialized.", 0);
     }
 }
+PHP_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, shutdown) {
+    php_tracer_provider_object *intern = Z_TRACER_PROVIDER_OBJ_P(getThis());
+    RETURN_BOOL(tracer_provider_shutdown(intern->cpp_tracer_provider));
+}
 PHP_METHOD(OpenTelemetry_SDK_Trace_TracerProvider, getTracer) {
     //php_printf("(php)TracerProvider::getTracer\n");
 
