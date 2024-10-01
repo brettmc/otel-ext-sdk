@@ -37,6 +37,19 @@ if test "$PHP_OPENTELEMETRY_SDK" != "no"; then
     PHP_REQUIRE_CXX()
     dnl PHP_CXX_COMPILE_STDCXX(11, mandatory, OPENTELEMETRY_SDK_STDCXX)
 
+    dnl PECL builds require some directory creation, as build dir != source dir
+    AC_MSG_CHECKING(for sdk directory structure)
+    if test ! -d "$abs_builddir/sdk"; then
+      mkdir -p $abs_builddir/sdk/cpp $abs_builddir/sdk/php
+      if test $? -ne 0; then
+        AC_MSG_ERROR(Failed to create $abs_builddir/sdk/*)
+        exit 1
+      fi
+      AC_MSG_RESULT($abs_builddir/sdk/* created)
+    else
+      AC_MSG_RESULT($abs_builddir/sdk/* exists)
+    fi
+
   AC_DEFINE(HAVE_OPENTELEMETRY_SDK, 1, [ Have opentelemetry_sdk support ])
 
   OTEL_SDK_SOURCES=`find $srcdir/sdk -name '*.c*' | sed "s|^$srcdir/||"`
