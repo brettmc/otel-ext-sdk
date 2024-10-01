@@ -14,6 +14,7 @@ namespace trace_sdk {
         TracerProvider();
         ~TracerProvider();
         opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> GetTracer();
+        bool ForceFlush();
         bool Shutdown();
     private:
         std::string GetEnvVar(const char*, const std::string&);

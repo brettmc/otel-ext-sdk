@@ -117,6 +117,7 @@ class TracerProvider implements TracerProviderInterface
     public function __construct() {}
     public function __destruct() {}
     public function getTracer(string $name): Tracer {}
+    public function forceFlush(): bool {}
     public function shutdown(): bool {}
 }
 

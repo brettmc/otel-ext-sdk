@@ -75,6 +75,11 @@ namespace trace_sdk {
         }
     }
 
+    bool TracerProvider::ForceFlush() {
+        cpp_tracer_provider->ForceFlush();
+        return true;
+    }
+
     bool TracerProvider::Shutdown() {
         cpp_tracer_provider->Shutdown();
         return true;

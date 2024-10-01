@@ -195,6 +195,9 @@ trace_sdk_Tracer *tracer_provider_get_tracer(trace_sdk_TracerProvider *provider)
 bool tracer_provider_shutdown(trace_sdk_TracerProvider *provider) {
     return reinterpret_cast<trace_sdk::TracerProvider*>(provider)->Shutdown();
 }
+bool tracer_provider_force_flush(trace_sdk_TracerProvider *provider) {
+    return reinterpret_cast<trace_sdk::TracerProvider*>(provider)->ForceFlush();
+}
 // end TracerProvider
 
 //end extern C

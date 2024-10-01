@@ -47,6 +47,7 @@ trace_sdk_Span *span_builder_start_span(trace_sdk_SpanBuilder *builder);
 trace_sdk_TracerProvider *tracer_provider_create();
 void tracer_provider_destroy(trace_sdk_TracerProvider *provider);
 trace_sdk_Tracer *tracer_provider_get_tracer(trace_sdk_TracerProvider *provider);
+bool tracer_provider_force_flush(trace_sdk_TracerProvider *provider);
 bool tracer_provider_shutdown(trace_sdk_TracerProvider *provider);
 
 #ifdef __cplusplus
