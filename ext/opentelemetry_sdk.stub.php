@@ -5,7 +5,103 @@
  * @undocumentable
  */
 
+//TODO create an interface in core SDK
+/*interface \OpenTelemetry\SDK\Resource\ResourceInfo
+{
+
+}*/
+
+namespace OpenTelemetry\API\Trace;
+
+interface SpanContextInterface
+{
+    public function getTraceId(): string;
+    public function getSpanId(): string;
+    public function getTraceFlags(): int;
+    //public function getTraceState(): ?TraceStateInterface;
+}
+
+/*interface \OpenTelemetry\SDK\Common\Attribute\AttributesInterface extends \Traversable, \Countable
+{
+    public function has(string $name): bool;
+    public function get(string $name);
+    public function getDroppedAttributesCount(): int;
+    public function toArray(): array;
+}
+
+interface \OpenTelemetry\SDK\Common\Instrumentation\InstrumentationScopeInterface
+{
+    public function getName(): string;
+
+    public function getVersion(): ?string;
+
+    public function getSchemaUrl(): ?string;
+
+    public function getAttributes(): \OpenTelemetry\SDK\Common\Attribute\AttributesInterface;
+}*/
+
 namespace OpenTelemetry\SDK\Trace;
+
+/*interface StatusDataInterface
+{
+    public static function ok(): self;
+    public static function error(): self;
+    public static function unset(): self;
+    public function getCode(): string;
+    public function getDescription(): string;
+}*/
+
+interface SpanDataInterface
+{
+    public function getName(): string;
+    public function getKind(): int;
+    public function getContext(): \OpenTelemetry\API\Trace\SpanContextInterface;
+    public function getParentContext(): \OpenTelemetry\API\Trace\SpanContextInterface;
+    //public function getTraceId(): string;
+    //public function getSpanId(): string;
+    //public function getParentSpanId(): string;
+    //public function getStatus(): StatusDataInterface;
+    public function getStartEpochNanos(): int;
+    //public function getAttributes(): AttributesInterface;
+    //public function getEvents(): array;
+    //public function getLinks(): array;
+    public function getEndEpochNanos(): int;
+    //public function hasEnded(): bool;
+    //public function getInstrumentationScope(): InstrumentationScopeInterface;
+    //public function getResource(): ResourceInfo;
+    //public function getTotalDroppedEvents(): int;
+    //public function getTotalDroppedLinks(): int;
+}
+
+interface ReadableSpanInterface
+{
+    public function getName(): string;
+    //public function getContext(): mixed;//: API\SpanContextInterface;
+    //public function getParentContext(): mixed;//: API\SpanContextInterface;
+    //public function getInstrumentationScope(): mixed;//: InstrumentationScopeInterface;
+    //public function hasEnded(): bool;
+    public function toSpanData(): SpanDataInterface;
+    //public function getDuration(): int;
+    //public function getKind(): int;
+    //public function getAttribute(string $key): mixed;
+}
+
+interface SpanProcessorInterface {
+    public function onStart(ReadWriteSpanInterface $span, ContextInterface $parentContext): void;
+    public function onEnd(ReadableSpanInterface $span): void;
+    public function forceFlush(?CancellationInterface $cancellation = null): bool;
+    public function shutdown(?CancellationInterface $cancellation = null): bool;
+}
+
+class BatchSpanProcessor implements SpanProcessorInterface
+{
+    public function __construct() {}
+    public function onStart(ReadWriteSpanInterface $span, ContextInterface $parentContext): void {}
+    public function onEnd(ReadableSpanInterface $span): void {}
+    public function forceFlush(?CancellationInterface $cancellation = null): bool {}
+    public function shutdown(?CancellationInterface $cancellation = null): bool {}
+    public function test(): void {}
+}
 
 interface ScopeInterface
 {

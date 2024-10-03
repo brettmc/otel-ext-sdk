@@ -2,6 +2,7 @@
 #define OTEL_EXT_SDK_OPAQUE_TYPES_H
 
 //opaque pointers to c++ classes
+typedef struct trace_sdk_BatchSpanProcessor trace_sdk_BatchSpanProcessor;
 typedef struct trace_sdk_Scope trace_sdk_Scope;
 typedef struct trace_sdk_SpanBuilder trace_sdk_SpanBuilder;
 typedef struct trace_sdk_Span trace_sdk_Span;
