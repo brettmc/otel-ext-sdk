@@ -13,43 +13,52 @@
 
 namespace OpenTelemetry\API\Trace;
 
+interface TraceStateInterface
+{
+    //public function with(string $key, string $value): TraceStateInterface;
+    //public function without(string $key): TraceStateInterface;
+    //public function get(string $key): ?string;
+    //public function getListMemberCount(): int;
+    //public function toString(?int $limit = null): string;
+    public function __toString(): string;
+}
+
 interface SpanContextInterface
 {
     public function getTraceId(): string;
     public function getSpanId(): string;
     public function getTraceFlags(): int;
-    //public function getTraceState(): ?TraceStateInterface;
+    public function getTraceState(): ?TraceStateInterface;
 }
 
-/*interface \OpenTelemetry\SDK\Common\Attribute\AttributesInterface extends \Traversable, \Countable
+namespace OpenTelemetry\SDK\Common\Attribute;
+interface AttributesInterface extends \Traversable, \Countable
 {
     public function has(string $name): bool;
-    public function get(string $name);
+    public function get(string $name): mixed; //todo??
     public function getDroppedAttributesCount(): int;
     public function toArray(): array;
 }
 
-interface \OpenTelemetry\SDK\Common\Instrumentation\InstrumentationScopeInterface
+namespace OpenTelemetry\SDK\Common\Instrumentation;
+interface InstrumentationScopeInterface
 {
     public function getName(): string;
-
     public function getVersion(): ?string;
-
     public function getSchemaUrl(): ?string;
-
-    public function getAttributes(): \OpenTelemetry\SDK\Common\Attribute\AttributesInterface;
-}*/
+    //public function getAttributes(): \OpenTelemetry\SDK\Common\Attribute\AttributesInterface;
+}
 
 namespace OpenTelemetry\SDK\Trace;
 
-/*interface StatusDataInterface
+interface StatusDataInterface
 {
-    public static function ok(): self;
-    public static function error(): self;
-    public static function unset(): self;
+    //public static function ok(): StatusDataInterface;
+    //public static function error(): StatusDataInterface;
+    //public static function unset(): StatusDataInterface;
     public function getCode(): string;
     public function getDescription(): string;
-}*/
+}
 
 interface SpanDataInterface
 {
@@ -60,14 +69,14 @@ interface SpanDataInterface
     //public function getTraceId(): string;
     //public function getSpanId(): string;
     //public function getParentSpanId(): string;
-    //public function getStatus(): StatusDataInterface;
+    public function getStatus(): StatusDataInterface;
     public function getStartEpochNanos(): int;
     //public function getAttributes(): AttributesInterface;
     //public function getEvents(): array;
     //public function getLinks(): array;
     public function getEndEpochNanos(): int;
     //public function hasEnded(): bool;
-    //public function getInstrumentationScope(): InstrumentationScopeInterface;
+    public function getInstrumentationScope(): \OpenTelemetry\SDK\Common\Instrumentation\InstrumentationScopeInterface;
     //public function getResource(): ResourceInfo;
     //public function getTotalDroppedEvents(): int;
     //public function getTotalDroppedLinks(): int;
@@ -100,7 +109,6 @@ class BatchSpanProcessor implements SpanProcessorInterface
     public function onEnd(ReadableSpanInterface $span): void {}
     public function forceFlush(?CancellationInterface $cancellation = null): bool {}
     public function shutdown(?CancellationInterface $cancellation = null): bool {}
-    public function test(): void {}
 }
 
 interface ScopeInterface

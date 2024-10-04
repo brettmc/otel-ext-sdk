@@ -14,12 +14,12 @@ namespace trace_sdk {
         void OnEnd(zval *php_span);
         bool ForceFlush();
         bool Shutdown();
-        void Test();
     private:
         std::unique_ptr<opentelemetry::sdk::trace::SpanProcessor> cpp_processor;
         std::string GetEnvVar(const char*, const std::string&);
         void ConvertPhpSpanToRecordable(zval *, opentelemetry::sdk::trace::Recordable *);
         opentelemetry::v1::trace::SpanKind ConvertIntToSpanKind(int);
+        static std::map<std::string, opentelemetry::v1::nostd::unique_ptr<opentelemetry::sdk::instrumentationscope::InstrumentationScope>> scope_map;
     };
 } //namespace trace_sdk
 

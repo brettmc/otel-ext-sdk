@@ -6,6 +6,7 @@
 #include "../../php_opentelemetry_sdk.h"
 #include "opentelemetry/exporters/ostream/span_exporter_factory.h"
 #include "opentelemetry/exporters/otlp/otlp_http_exporter.h"
+#include "opentelemetry/sdk/instrumentationscope/instrumentation_scope.h"
 #include "opentelemetry/sdk/trace/exporter.h"
 #include "opentelemetry/sdk/trace/processor.h"
 #include "opentelemetry/sdk/trace/recordable.h"
@@ -22,6 +23,7 @@
 #include <chrono>
 
 namespace trace_sdk {
+    std::map<std::string, opentelemetry::nostd::unique_ptr<opentelemetry::sdk::instrumentationscope::InstrumentationScope>> BatchSpanProcessor::scope_map;
     BatchSpanProcessor::BatchSpanProcessor() {
         //php_printf("(c++)BSP::construct\n");
         std::string otel_exporter = GetEnvVar("OTEL_TRACES_EXPORTER", "otlp");
@@ -71,14 +73,6 @@ namespace trace_sdk {
     void BatchSpanProcessor::OnEnd(zval *php_span) {
         std::unique_ptr<opentelemetry::sdk::trace::Recordable> r = cpp_processor->MakeRecordable();
         ConvertPhpSpanToRecordable(php_span, r.get());
-        cpp_processor->OnEnd(std::move(r));
-    }
-
-    void BatchSpanProcessor::Test() {
-        php_printf("(c++)BatchSpanProcessor Test\n");
-        std::unique_ptr<opentelemetry::sdk::trace::Recordable> r = cpp_processor->MakeRecordable();
-        r->SetName("test");
-        r->SetSpanKind(opentelemetry::trace::SpanKind::kServer);
         cpp_processor->OnEnd(std::move(r));
     }
 
@@ -165,7 +159,56 @@ namespace trace_sdk {
         zval_ptr_dtor(&start_time);
         zval_ptr_dtor(&end_time);
 
+        // status
+        zval status, status_code, status_description;
+        zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getStatus", &status);
+        assert(Z_TYPE(status) == IS_OBJECT);
+        zend_class_entry *status_ce = Z_OBJCE(status);
+        zend_call_method_with_0_params(Z_OBJ_P(&status), status_ce, NULL, "getCode", &status_code);
+        assert(Z_TYPE(status_code) == IS_STRING);
+        zend_call_method_with_0_params(Z_OBJ_P(&status), status_ce, NULL, "getDescription", &status_description);
+        assert(Z_TYPE(status_description) == IS_STRING);
+        opentelemetry::v1::trace::StatusCode cpp_status;
+        if (strcmp(Z_STRVAL(status_code), "Ok") == 0) {
+            cpp_status = opentelemetry::v1::trace::StatusCode::kOk;
+        } else if (strcmp(Z_STRVAL(status_code), "Error") == 0) {
+            cpp_status = opentelemetry::v1::trace::StatusCode::kError;
+        } else {
+            cpp_status = opentelemetry::v1::trace::StatusCode::kUnset;
+        }
+        recordable->SetStatus(cpp_status, Z_STRVAL(status_description));
+        zval_ptr_dtor(&status);
+        zval_ptr_dtor(&status_code);
+        zval_ptr_dtor(&status_description);
 
+        //instrumentation scope
+        zval scope, scope_name, scope_version, scope_schema_url;
+        zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getInstrumentationScope", &scope);
+        assert(Z_TYPE(scope) == IS_OBJECT);
+        zend_class_entry *scope_ce = Z_OBJCE(scope);
+        zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getName", &scope_name);
+        assert(Z_TYPE(scope_name) == IS_STRING);
+        zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getVersion", &scope_version);
+        assert(Z_TYPE(scope_version) == IS_STRING);
+        zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getSchemaUrl", &scope_schema_url);
+        assert(Z_TYPE(scope_schema_url) == IS_STRING);
+
+        std::stringstream ss;
+        ss << Z_STRVAL(scope_name) << "_" << Z_STRVAL(scope_version) << "_" << Z_STRVAL(scope_schema_url);
+        std::string scope_key = ss.str();
+        if (scope_map.find(scope_key) == scope_map.end()) {
+            scope_map[scope_key] = opentelemetry::sdk::instrumentationscope::InstrumentationScope::Create(
+                    Z_STRVAL(scope_name),
+                    Z_STRVAL(scope_version),
+                    Z_STRVAL(scope_schema_url)
+            );
+        }
+
+        recordable->SetInstrumentationScope(*scope_map[scope_key]);
+        zval_ptr_dtor(&scope);
+        zval_ptr_dtor(&scope_name);
+        zval_ptr_dtor(&scope_version);
+        zval_ptr_dtor(&scope_schema_url);
 
         zval_ptr_dtor(&span_data);
     }

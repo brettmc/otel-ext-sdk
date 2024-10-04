@@ -7,6 +7,9 @@ OTEL_TRACES_EXPORTER=console
 --FILE--
 <?php
 use OpenTelemetry\API\Trace\SpanContextInterface;
+use OpenTelemetry\API\Trace\TraceStateInterface;
+use OpenTelemetry\SDK\Common\Instrumentation\InstrumentationScopeInterface;
+use OpenTelemetry\SDK\Trace\StatusDataInterface;
 use OpenTelemetry\SDK\Trace\BatchSpanProcessor;
 use OpenTelemetry\SDK\Trace\ReadableSpanInterface;
 use OpenTelemetry\SDK\Trace\SpanDataInterface;
@@ -29,6 +32,7 @@ $span = new class implements ReadableSpanInterface {
                     public function getTraceId(): string { return 'e4a8d4e0d75c0702200af2882cb16c6b'; }
                     public function getSpanId(): string { return '46701247e52c2d1b'; }
                     public function getTraceFlags(): int { return 0; }
+                    public function getTraceState(): ?TraceStateInterface { return null; }
                 };
             }
             public function getParentContext(): SpanContextInterface  {
@@ -36,7 +40,21 @@ $span = new class implements ReadableSpanInterface {
                      public function getTraceId(): string { return 'e4a8d4e0d75c0702200af2882cb16c6b'; }
                      public function getSpanId(): string { return '5da31fe1c9339c1269966cefd0cbad1a'; }
                      public function getTraceFlags(): int { return 0; }
+                     public function getTraceState(): ?TraceStateInterface { return null; }
                  };
+             }
+             public function getStatus(): StatusDataInterface {
+                return new class implements StatusDataInterface {
+                    public function getCode(): string { return 'Ok'; }
+                    public function getDescription(): string { return 'ok-description'; }
+                };
+             }
+             public function getInstrumentationScope(): InstrumentationScopeInterface {
+                return new class implements InstrumentationScopeInterface {
+                    public function getName(): string { return 'instrumentation_scope_name'; }
+                    public function getVersion(): ?string { return '0.0.1'; }
+                    public function getSchemaUrl(): ?string { return 'http://example.com/schema/'; }
+                };
              }
         };
     }
@@ -54,12 +72,12 @@ $bsp->shutdown();
   parent_span_id: 3564613331666531
   start         : 12345000000000
   duration      : 2000000000
-  description   :%s
+  description   : ok-description
   span kind     : Server
-  status        : Unset
+  status        : Ok
   attributes    :%s
   events        :%s
   links         :%s
   resources     :%s
-  instr-lib     : unknown_service
+  instr-lib     : instrumentation_scope_name-0.0.1
 }

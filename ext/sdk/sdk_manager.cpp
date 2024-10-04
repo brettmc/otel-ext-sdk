@@ -45,10 +45,6 @@ void batch_span_processor_on_end(trace_sdk_BatchSpanProcessor *bsp, zval *php_sp
     reinterpret_cast<trace_sdk::BatchSpanProcessor *>(bsp)->OnEnd(php_span);
 }
 
-void batch_span_processor_test(trace_sdk_BatchSpanProcessor *bsp) {
-    reinterpret_cast<trace_sdk::BatchSpanProcessor *>(bsp)->Test();
-}
-
 // Tracer
 void tracer_destroy(trace_sdk_Tracer *tracer) {
     //php_printf("(tracer manager)tracer_destroy\n");
