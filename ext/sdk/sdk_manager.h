@@ -6,6 +6,14 @@
 extern "C" {
 #endif
 
+// BatchSpanProcessor
+trace_sdk_BatchSpanProcessor *batch_span_processor_create();
+void batch_span_processor_destroy(trace_sdk_BatchSpanProcessor *bsp);
+bool batch_span_processor_shutdown(trace_sdk_BatchSpanProcessor *bsp);
+bool batch_span_processor_force_flush(trace_sdk_BatchSpanProcessor *bsp);
+void batch_span_processor_on_start(trace_sdk_BatchSpanProcessor *bsp, zval *php_span, zval *php_parent_context);
+void batch_span_processor_on_end(trace_sdk_BatchSpanProcessor *bsp, zval *php_span);
+
 // Tracer
 void tracer_destroy(trace_sdk_Tracer *tracer);
 trace_sdk_SpanBuilder *tracer_create_span_builder(trace_sdk_Tracer *tracer, const char *span_name);
@@ -47,6 +55,7 @@ trace_sdk_Span *span_builder_start_span(trace_sdk_SpanBuilder *builder);
 trace_sdk_TracerProvider *tracer_provider_create();
 void tracer_provider_destroy(trace_sdk_TracerProvider *provider);
 trace_sdk_Tracer *tracer_provider_get_tracer(trace_sdk_TracerProvider *provider);
+bool tracer_provider_force_flush(trace_sdk_TracerProvider *provider);
 bool tracer_provider_shutdown(trace_sdk_TracerProvider *provider);
 
 #ifdef __cplusplus

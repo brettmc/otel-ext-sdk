@@ -38,7 +38,7 @@ zend_object *context_create_object(zend_class_entry *ce)
     return &intern->std;
 }
 
-PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, __construct)
+PHP_METHOD(OpenTelemetry_Context_ContextKey, __construct)
 {
     //php_printf("ContextKey::__construct\n");
     php_context_key_object *obj = Z_CONTEXT_KEY_OBJ_P(getThis());
@@ -51,12 +51,12 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, __construct)
     obj->name = zend_string_copy(name);
 }
 
-PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, __destruct)
+PHP_METHOD(OpenTelemetry_Context_ContextKey, __destruct)
 {
     //php_printf("ContextKey::__destruct\n");
 }
 
-PHP_METHOD(OpenTelemetry_SDK_Trace_ContextKey, name)
+PHP_METHOD(OpenTelemetry_Context_ContextKey, name)
 {
     php_context_key_object *obj = Z_CONTEXT_KEY_OBJ_P(getThis());
     RETURN_STRING(ZSTR_VAL(obj->name));
@@ -83,7 +83,7 @@ static zend_object *context_key_create_object(zend_class_entry *class_type) {
     return &intern->std;
 }
 
-PHP_METHOD(OpenTelemetry_SDK_Trace_Context, getCurrent)
+PHP_METHOD(OpenTelemetry_Context_Context, getCurrent)
 {
     trace_sdk_Context *cpp_context = context_get_current();
     object_init_ex(return_value, context_ce);
@@ -91,13 +91,13 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, getCurrent)
     context_intern->cpp_context = cpp_context;
 }
 
-PHP_METHOD(OpenTelemetry_SDK_Trace_Context, activate)
+PHP_METHOD(OpenTelemetry_Context_Context, activate)
 {
     //php_printf("(php)Context::activate\n");
     object_init_ex(return_value, scope_ce);
 }
 
-PHP_METHOD(OpenTelemetry_SDK_Trace_Context, with)
+PHP_METHOD(OpenTelemetry_Context_Context, with)
 {
     zval *zv_key;
     zval *value;
@@ -118,7 +118,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, with)
     context_intern->cpp_context = new_context;
 }
 
-PHP_METHOD(OpenTelemetry_SDK_Trace_Context, get)
+PHP_METHOD(OpenTelemetry_Context_Context, get)
 {
     php_context_object *internal = Z_CONTEXT_OBJ_P(getThis());
     zval *zv_key;
@@ -137,15 +137,15 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Context, get)
 void register_context_class()
 {
     //context key
-    context_key_interface_ce = register_class_OpenTelemetry_SDK_Trace_ContextKeyInterface();
-    context_key_ce = register_class_OpenTelemetry_SDK_Trace_ContextKey(context_key_interface_ce);
+    context_key_interface_ce = register_class_OpenTelemetry_Context_ContextKeyInterface();
+    context_key_ce = register_class_OpenTelemetry_Context_ContextKey(context_key_interface_ce);
     context_key_ce->create_object = context_key_create_object;
     memcpy(&context_key_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     context_key_object_handlers.free_obj = context_key_free_obj;
 
     //context
-    context_interface_ce = register_class_OpenTelemetry_SDK_Trace_ContextInterface();
-    context_ce = register_class_OpenTelemetry_SDK_Trace_Context(context_interface_ce);
+    context_interface_ce = register_class_OpenTelemetry_Context_ContextInterface();
+    context_ce = register_class_OpenTelemetry_Context_Context(context_interface_ce);
     context_ce->create_object = context_create_object;
     memcpy(&context_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     context_object_handlers.free_obj = context_free_obj;

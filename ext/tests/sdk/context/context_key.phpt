@@ -4,8 +4,8 @@ Create a ContextKey
 opentelemetry_sdk
 --FILE--
 <?php
-use OpenTelemetry\SDK\Trace\ContextKey;
-use OpenTelemetry\SDK\Trace\ContextKeyInterface;
+use OpenTelemetry\Context\ContextKey;
+use OpenTelemetry\Context\ContextKeyInterface;
 
 $one = new ContextKey('key_one');
 $two = new ContextKey('key_two');

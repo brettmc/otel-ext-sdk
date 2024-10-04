@@ -109,7 +109,6 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_Span, storeInContext) {
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_Span, fromContext) {
     zval *context_zv;
-    zval *span = ZEND_THIS;
     php_context_object *context_intern;
 
     ZEND_PARSE_PARAMETERS_START(1, 1)
