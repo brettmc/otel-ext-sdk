@@ -92,6 +92,8 @@ void register_batch_span_processor_class() {
     register_class_OpenTelemetry_SDK_Trace_ReadWriteSpanInterface(readable_span_interface_ce);
     register_class_OpenTelemetry_API_Trace_TraceStateInterface();
     register_class_OpenTelemetry_SDK_Trace_StatusDataInterface();
+    register_class_OpenTelemetry_Context_ContextInterface();
+    register_class_OpenTelemetry_SDK_Common_Future_CancellationInterface();
     register_class_OpenTelemetry_SDK_Common_Instrumentation_InstrumentationScopeInterface();
     span_data_interface_ce = register_class_OpenTelemetry_SDK_Trace_SpanDataInterface();
     span_context_interface_ce = register_class_OpenTelemetry_API_Trace_SpanContextInterface();

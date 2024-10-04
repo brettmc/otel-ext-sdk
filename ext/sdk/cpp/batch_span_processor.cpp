@@ -61,7 +61,7 @@ namespace trace_sdk {
     }
 
     bool BatchSpanProcessor::Shutdown() {
-        //php_printf("(c++)BatchSpanProcessor Shutdown\n");
+        php_printf("(c++)BatchSpanProcessor Shutdown\n");
         cpp_processor->Shutdown();
         return true;
     }
@@ -149,12 +149,12 @@ namespace trace_sdk {
         zval start_time, end_time;
         zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getStartEpochNanos", &start_time);
         assert(Z_TYPE(start_time) == IS_LONG);
-        std::chrono::system_clock::time_point start_time_point = std::chrono::system_clock::time_point(std::chrono::seconds(Z_LVAL(start_time)));
+        std::chrono::system_clock::time_point start_time_point = std::chrono::system_clock::time_point(std::chrono::nanoseconds(Z_LVAL(start_time)));
         recordable->SetStartTime(opentelemetry::v1::common::SystemTimestamp(start_time_point));
 
         zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getEndEpochNanos", &end_time);
         assert(Z_TYPE(end_time) == IS_LONG);
-        std::chrono::system_clock::time_point end_time_point = std::chrono::system_clock::time_point(std::chrono::seconds(Z_LVAL(end_time)));
+        std::chrono::system_clock::time_point end_time_point = std::chrono::system_clock::time_point(std::chrono::nanoseconds(Z_LVAL(end_time)));
         recordable->SetDuration(std::chrono::duration_cast<std::chrono::nanoseconds>(end_time_point - start_time_point));
         zval_ptr_dtor(&start_time);
         zval_ptr_dtor(&end_time);
@@ -189,8 +189,12 @@ namespace trace_sdk {
         zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getName", &scope_name);
         assert(Z_TYPE(scope_name) == IS_STRING);
         zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getVersion", &scope_version);
-        assert(Z_TYPE(scope_version) == IS_STRING);
+        convert_to_string(&scope_version)
+        //php_printf("scope_version is a %d\n", Z_TYPE(scope_version));
+        //php_printf("scope_version: %s\n", Z_STRVAL(scope_version));
+        //assert(Z_TYPE(scope_version) == IS_STRING);
         zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getSchemaUrl", &scope_schema_url);
+        convert_to_string(&scope_schema_url);
         assert(Z_TYPE(scope_schema_url) == IS_STRING);
 
         std::stringstream ss;
