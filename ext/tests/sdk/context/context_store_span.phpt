@@ -7,8 +7,8 @@ OTEL_TRACES_EXPORTER=console
 --FILE--
 <?php
 use OpenTelemetry\SDK\Trace\SpanInterface;
-use OpenTelemetry\SDK\Trace\Context;
-use OpenTelemetry\SDK\Trace\ContextKey;
+use OpenTelemetry\Context\Context;
+use OpenTelemetry\Context\ContextKey;
 use OpenTelemetry\SDK\Trace\TracerProvider;
 
 $provider = new TracerProvider();

@@ -7,7 +7,7 @@ static zend_object_handlers scope_object_handlers;
 zend_class_entry *scope_interface_ce;
 zend_class_entry *scope_ce;
 
-PHP_METHOD(OpenTelemetry_SDK_Trace_Scope, detach)
+PHP_METHOD(OpenTelemetry_Context_Scope, detach)
 {
     //todo: check for double-detach?
     php_scope_object *intern = Z_SCOPE_OBJ_P(getThis());
@@ -45,8 +45,8 @@ zend_object *scope_create_object(zend_class_entry *ce)
 // Initialize the Scope+ScopeInterface classes
 void register_scope_class()
 {
-    scope_interface_ce = register_class_OpenTelemetry_SDK_Trace_ScopeInterface();
-    scope_ce = register_class_OpenTelemetry_SDK_Trace_Scope(scope_interface_ce);
+    scope_interface_ce = register_class_OpenTelemetry_Context_ScopeInterface();
+    scope_ce = register_class_OpenTelemetry_Context_Scope(scope_interface_ce);
     scope_ce->create_object = scope_create_object;
 
     memcpy(&scope_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));

@@ -56,8 +56,15 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_BatchSpanProcessor, __destruct) {
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_BatchSpanProcessor, onStart) {
+    zval *span, *context;
+    ZEND_PARSE_PARAMETERS_START(2, 2)
+        //Z_PARAM_OBJECT_OF_CLASS(span, readable_span_interface_ce)
+        Z_PARAM_OBJECT(span)
+        Z_PARAM_OBJECT(context)
+    ZEND_PARSE_PARAMETERS_END();
+
     php_batch_span_processor_object *intern = Z_BATCH_SPAN_PROCESSOR_OBJ_P(ZEND_THIS);
-    batch_span_processor_on_start(intern->cpp_batch_span_processor);
+    batch_span_processor_on_start(intern->cpp_batch_span_processor, span, context);
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_BatchSpanProcessor, onEnd) {
@@ -65,8 +72,8 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_BatchSpanProcessor, onEnd) {
     ZEND_PARSE_PARAMETERS_START(1, 1)
         Z_PARAM_OBJECT_OF_CLASS(span, readable_span_interface_ce)
     ZEND_PARSE_PARAMETERS_END();
-    php_batch_span_processor_object *intern = Z_BATCH_SPAN_PROCESSOR_OBJ_P(ZEND_THIS);
 
+    php_batch_span_processor_object *intern = Z_BATCH_SPAN_PROCESSOR_OBJ_P(ZEND_THIS);
     batch_span_processor_on_end(intern->cpp_batch_span_processor, span);
 }
 
@@ -82,6 +89,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_BatchSpanProcessor, forceFlush) {
 
 void register_batch_span_processor_class() {
     readable_span_interface_ce = register_class_OpenTelemetry_SDK_Trace_ReadableSpanInterface();
+    register_class_OpenTelemetry_SDK_Trace_ReadWriteSpanInterface(readable_span_interface_ce);
     register_class_OpenTelemetry_API_Trace_TraceStateInterface();
     register_class_OpenTelemetry_SDK_Trace_StatusDataInterface();
     register_class_OpenTelemetry_SDK_Common_Instrumentation_InstrumentationScopeInterface();

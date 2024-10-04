@@ -66,8 +66,8 @@ namespace trace_sdk {
         return true;
     }
 
-    void BatchSpanProcessor::OnStart() {
-        //todo: is a no-op in otel-cpp, but could run it anyway...
+    void BatchSpanProcessor::OnStart(zval *php_span, zval *parent_context) {
+        //todo: Context vs SpanContext
     }
 
     void BatchSpanProcessor::OnEnd(zval *php_span) {

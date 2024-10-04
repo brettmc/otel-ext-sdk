@@ -4,9 +4,9 @@ Context stores supported types
 opentelemetry_sdk
 --FILE--
 <?php
-use OpenTelemetry\SDK\Trace\Context;
-use OpenTelemetry\SDK\Trace\ContextKey;
-use OpenTelemetry\SDK\Trace\ContextKeyInterface;
+use OpenTelemetry\Context\Context;
+use OpenTelemetry\Context\ContextKey;
+use OpenTelemetry\Context\ContextKeyInterface;
 
 $key = new ContextKey('key_one');
 var_dump(Context::getCurrent()->with($key, 99)->get($key));

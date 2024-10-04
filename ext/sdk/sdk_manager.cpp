@@ -38,8 +38,8 @@ bool batch_span_processor_shutdown(trace_sdk_BatchSpanProcessor *bsp) {
 bool batch_span_processor_force_flush(trace_sdk_BatchSpanProcessor *bsp) {
     return reinterpret_cast<trace_sdk::BatchSpanProcessor *>(bsp)->ForceFlush();
 }
-void batch_span_processor_on_start(trace_sdk_BatchSpanProcessor *bsp) {
-    reinterpret_cast<trace_sdk::BatchSpanProcessor *>(bsp)->OnStart();
+void batch_span_processor_on_start(trace_sdk_BatchSpanProcessor *bsp, zval *php_span, zval *php_parent_context) {
+    reinterpret_cast<trace_sdk::BatchSpanProcessor *>(bsp)->OnStart(php_span, php_parent_context);
 }
 void batch_span_processor_on_end(trace_sdk_BatchSpanProcessor *bsp, zval *php_span) {
     reinterpret_cast<trace_sdk::BatchSpanProcessor *>(bsp)->OnEnd(php_span);

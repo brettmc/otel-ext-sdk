@@ -10,7 +10,7 @@ namespace trace_sdk {
     public:
         BatchSpanProcessor();
         ~BatchSpanProcessor();
-        void OnStart();
+        void OnStart(zval *php_span, zval *parent_context);
         void OnEnd(zval *php_span);
         bool ForceFlush();
         bool Shutdown();

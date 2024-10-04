@@ -11,6 +11,45 @@
 
 }*/
 
+namespace OpenTelemetry\Context;
+
+interface ScopeInterface
+{
+    public function detach(): int;
+}
+
+class Scope implements ScopeInterface
+{
+    public function detach(): int {}
+}
+
+interface ContextKeyInterface
+{
+}
+
+class ContextKey implements ContextKeyInterface
+{
+    public function __construct(private readonly ?string $name = null) {}
+    public function __destruct() {}
+    public function name(): ?string {}
+}
+
+class Context implements ContextInterface
+{
+    public static function getCurrent(): ContextInterface {}
+    public function activate(): ScopeInterface {}
+    public function with(ContextKeyInterface $key, mixed $value): ContextInterface {}
+    public function get(ContextKeyInterface $key): mixed {}
+}
+
+interface ContextInterface
+{
+    public static function getCurrent(): ContextInterface;
+    public function activate(): ScopeInterface;
+    public function with(ContextKeyInterface $key, mixed $value): ContextInterface;
+    public function get(ContextKeyInterface $key): mixed;
+}
+
 namespace OpenTelemetry\API\Trace;
 
 interface TraceStateInterface
@@ -32,6 +71,7 @@ interface SpanContextInterface
 }
 
 namespace OpenTelemetry\SDK\Common\Attribute;
+
 interface AttributesInterface extends \Traversable, \Countable
 {
     public function has(string $name): bool;
@@ -41,6 +81,7 @@ interface AttributesInterface extends \Traversable, \Countable
 }
 
 namespace OpenTelemetry\SDK\Common\Instrumentation;
+
 interface InstrumentationScopeInterface
 {
     public function getName(): string;
@@ -95,6 +136,9 @@ interface ReadableSpanInterface
     //public function getAttribute(string $key): mixed;
 }
 
+//TODO should also extend SpanInterface
+interface ReadWriteSpanInterface extends ReadableSpanInterface {}
+
 interface SpanProcessorInterface {
     public function onStart(ReadWriteSpanInterface $span, ContextInterface $parentContext): void;
     public function onEnd(ReadableSpanInterface $span): void;
@@ -109,43 +153,6 @@ class BatchSpanProcessor implements SpanProcessorInterface
     public function onEnd(ReadableSpanInterface $span): void {}
     public function forceFlush(?CancellationInterface $cancellation = null): bool {}
     public function shutdown(?CancellationInterface $cancellation = null): bool {}
-}
-
-interface ScopeInterface
-{
-    public function detach(): int;
-}
-
-class Scope implements ScopeInterface
-{
-    public function detach(): int {}
-}
-
-interface ContextKeyInterface
-{
-}
-
-class ContextKey implements ContextKeyInterface
-{
-    public function __construct(private readonly ?string $name = null) {}
-    public function __destruct() {}
-    public function name(): ?string {}
-}
-
-class Context implements ContextInterface
-{
-    public static function getCurrent(): ContextInterface {}
-    public function activate(): ScopeInterface {}
-    public function with(ContextKeyInterface $key, mixed $value): ContextInterface {}
-    public function get(ContextKeyInterface $key): mixed {}
-}
-
-interface ContextInterface
-{
-    public static function getCurrent(): ContextInterface;
-    public function activate(): ScopeInterface;
-    public function with(ContextKeyInterface $key, mixed $value): ContextInterface;
-    public function get(ContextKeyInterface $key): mixed;
 }
 
 interface SpanContextInterface
