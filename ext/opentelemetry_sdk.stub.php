@@ -4,9 +4,13 @@
  * @generate-class-entries
  * @undocumentable
  */
+namespace OpenTelemetry\SDK\Resource;
 
-/*interface \OpenTelemetry\SDK\Resource\ResourceInfo
+//todo interface in SDK?
+/*interface ResourceInfo
 {
+    public function getSchemaUrl(): ?string;
+    public function getAttributes(): \OpenTelemetry\SDK\Common\Attribute\AttributesInterface;
 }*/
 
 namespace OpenTelemetry\Context;
@@ -89,13 +93,13 @@ interface SpanDataInterface
     //public function getParentSpanId(): string;
     public function getStatus(): StatusDataInterface;
     public function getStartEpochNanos(): int;
-    //public function getAttributes(): AttributesInterface;
+    public function getAttributes(): \OpenTelemetry\SDK\Common\Attribute\AttributesInterface;
     //public function getEvents(): array;
     //public function getLinks(): array;
     public function getEndEpochNanos(): int;
     //public function hasEnded(): bool;
     public function getInstrumentationScope(): \OpenTelemetry\SDK\Common\Instrumentation\InstrumentationScopeInterface;
-    //public function getResource(): ResourceInfo;
+    public function getResource(): object; //ResourceInfo;
     //public function getTotalDroppedEvents(): int;
     //public function getTotalDroppedLinks(): int;
 }

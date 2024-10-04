@@ -1,5 +1,6 @@
 #include "php.h"
 #include <Zend/zend_exceptions.h>
+#include <Zend/zend_interfaces.h>
 #include "batch_span_processor_class.h"
 #include "../../opentelemetry_sdk_arginfo.h"
 
@@ -94,6 +95,8 @@ void register_batch_span_processor_class() {
     register_class_OpenTelemetry_SDK_Trace_StatusDataInterface();
     register_class_OpenTelemetry_Context_ContextInterface();
     register_class_OpenTelemetry_SDK_Common_Future_CancellationInterface();
+    register_class_OpenTelemetry_SDK_Common_Attribute_AttributesInterface(zend_ce_traversable, zend_ce_countable);
+//    register_class_OpenTelemetry_SDK_Resource_ResourceInfo();
     register_class_OpenTelemetry_SDK_Common_Instrumentation_InstrumentationScopeInterface();
     span_data_interface_ce = register_class_OpenTelemetry_SDK_Trace_SpanDataInterface();
     span_context_interface_ce = register_class_OpenTelemetry_API_Trace_SpanContextInterface();

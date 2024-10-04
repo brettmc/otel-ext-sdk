@@ -20,6 +20,7 @@ namespace trace_sdk {
         void ConvertPhpSpanToRecordable(zval *, opentelemetry::sdk::trace::Recordable *);
         opentelemetry::v1::trace::SpanKind ConvertIntToSpanKind(int);
         static std::map<std::string, opentelemetry::v1::nostd::unique_ptr<opentelemetry::sdk::instrumentationscope::InstrumentationScope>> scope_map;
+        static std::shared_ptr<opentelemetry::sdk::resource::Resource> cpp_resource;
     };
 } //namespace trace_sdk
 
