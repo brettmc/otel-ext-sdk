@@ -61,13 +61,14 @@ namespace trace_sdk {
     }
 
     bool BatchSpanProcessor::Shutdown() {
-        php_printf("(c++)BatchSpanProcessor Shutdown\n");
+        //php_printf("(c++)BatchSpanProcessor Shutdown\n");
         cpp_processor->Shutdown();
         return true;
     }
 
     void BatchSpanProcessor::OnStart(zval *php_span, zval *parent_context) {
         //todo: Context vs SpanContext
+        //php_printf("(c++)BatchSpanProcessor OnStart\n");
     }
 
     void BatchSpanProcessor::OnEnd(zval *php_span) {
@@ -190,9 +191,7 @@ namespace trace_sdk {
         assert(Z_TYPE(scope_name) == IS_STRING);
         zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getVersion", &scope_version);
         convert_to_string(&scope_version)
-        //php_printf("scope_version is a %d\n", Z_TYPE(scope_version));
-        //php_printf("scope_version: %s\n", Z_STRVAL(scope_version));
-        //assert(Z_TYPE(scope_version) == IS_STRING);
+        assert(Z_TYPE(scope_version) == IS_STRING);
         zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getSchemaUrl", &scope_schema_url);
         convert_to_string(&scope_schema_url);
         assert(Z_TYPE(scope_schema_url) == IS_STRING);
@@ -202,9 +201,9 @@ namespace trace_sdk {
         std::string scope_key = ss.str();
         if (scope_map.find(scope_key) == scope_map.end()) {
             scope_map[scope_key] = opentelemetry::sdk::instrumentationscope::InstrumentationScope::Create(
-                    Z_STRVAL(scope_name),
-                    Z_STRVAL(scope_version),
-                    Z_STRVAL(scope_schema_url)
+                Z_STRVAL(scope_name),
+                Z_STRVAL(scope_version),
+                Z_STRVAL(scope_schema_url)
             );
         }
 
@@ -223,9 +222,9 @@ namespace trace_sdk {
             case 0:
                 return opentelemetry::v1::trace::SpanKind::kInternal;
             case 1:
-                return opentelemetry::v1::trace::SpanKind::kServer;
-            case 2:
                 return opentelemetry::v1::trace::SpanKind::kClient;
+            case 2:
+                return opentelemetry::v1::trace::SpanKind::kServer;
             case 3:
                 return opentelemetry::v1::trace::SpanKind::kProducer;
             case 4:
