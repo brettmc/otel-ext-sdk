@@ -21,6 +21,7 @@
 #include "opentelemetry/trace/trace_flags.h"
 #include "opentelemetry/trace/trace_id.h"
 #include "opentelemetry/trace/span_id.h"
+#include <opentelemetry/common/attribute_value.h>
 #include <opentelemetry/common/timestamp.h>
 #include <chrono>
 
@@ -131,9 +132,9 @@ namespace trace_sdk {
         uint8_t trace_id_buf[16] = {0};
         uint8_t span_id_buf[8] = {0};
         uint8_t parent_span_id_buf[8] = {0};
-        memcpy(trace_id_buf, Z_STRVAL(trace_id), std::min(Z_STRLEN(trace_id), static_cast<size_t>(16)));
-        memcpy(span_id_buf, Z_STRVAL(span_id), std::min(Z_STRLEN(span_id), static_cast<size_t>(8)));
-        memcpy(parent_span_id_buf, Z_STRVAL(parent_span_id), std::min(Z_STRLEN(parent_span_id), static_cast<size_t>(8)));
+        hexStringToBytes(std::string(Z_STRVAL(trace_id), Z_STRLEN(trace_id)), trace_id_buf, 16);
+        hexStringToBytes(std::string(Z_STRVAL(span_id), Z_STRLEN(span_id)), span_id_buf, 8);
+        hexStringToBytes(std::string(Z_STRVAL(parent_span_id), Z_STRLEN(parent_span_id)), parent_span_id_buf, 8);
 
         opentelemetry::v1::trace::TraceId cpp_trace_id(trace_id_buf);
         opentelemetry::v1::trace::SpanId cpp_span_id(span_id_buf);
@@ -217,24 +218,25 @@ namespace trace_sdk {
 
         // resource
         if (cpp_resource == nullptr) {
-            zval resource, resource_schema_url;
+            zval resource, resource_attributes, resource_schema_url;
             zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getResource", &resource);
             assert(Z_TYPE(resource) == IS_OBJECT);
+            zend_call_method_with_0_params(Z_OBJ_P(&resource), Z_OBJCE_P(&resource), NULL, "getAttributes",
+                                           &resource_attributes);
+            assert(Z_TYPE(resource_attributes) == IS_OBJECT);
             zend_call_method_with_0_params(Z_OBJ_P(&resource), Z_OBJCE_P(&resource), NULL, "getSchemaUrl",
                                            &resource_schema_url);
             convert_to_string(&resource_schema_url);
             assert(Z_TYPE(resource_schema_url) == IS_STRING);
-            opentelemetry::sdk::resource::ResourceAttributes resource_attributes = {{"service", "test_service"},
-                                                                                    {"version", static_cast<uint32_t>(123)}};
-            //        resource_attributes["foo"] = "foo-value";
-            //        resource_attributes["bar"] = 123;
-            //std::string rsu(Z_STRVAL(resource_schema_url), Z_STRLEN(resource_schema_url));
-            //std::string rsu = "https://opentelemetry.io/schemas/1.27.0";
-            std::shared_ptr <std::string> schema_url_ptr = std::make_shared<std::string>(
-                    "https://opentelemetry.io/schemas/1.27.0");
-            cpp_resource = std::make_shared<opentelemetry::sdk::resource::Resource>(opentelemetry::sdk::resource::Resource::Create(
-                    resource_attributes, *schema_url_ptr));//, *schema_url_ptr);
+            std::string rsu_str(Z_STRVAL(resource_schema_url), Z_STRLEN(resource_schema_url));
+
+            opentelemetry::sdk::common::AttributeMap attribute_map;
+            AddResourceAttributesToMap(&resource_attributes, attribute_map);
+            opentelemetry::sdk::resource::Resource custom_resource = opentelemetry::sdk::resource::Resource::Create(attribute_map, rsu_str);
+
+            cpp_resource = std::make_shared<opentelemetry::sdk::resource::Resource>(custom_resource);
             zval_ptr_dtor(&resource);
+            zval_ptr_dtor(&resource_attributes);
             zval_ptr_dtor(&resource_schema_url);
         }
         recordable->SetResource(*cpp_resource);
@@ -287,6 +289,60 @@ namespace trace_sdk {
                 return opentelemetry::v1::trace::SpanKind::kConsumer;
             default:
                 return opentelemetry::v1::trace::SpanKind::kInternal;  // Default to internal if unknown
+        }
+    }
+
+    void BatchSpanProcessor::hexStringToBytes(const std::string &hex_string, uint8_t *out_buffer, size_t buffer_size) {
+        size_t len = hex_string.length();
+        for (size_t i = 0; i < buffer_size && i * 2 < len; ++i) {
+            std::string byte_string = hex_string.substr(i * 2, 2);
+            out_buffer[i] = static_cast<uint8_t>(strtol(byte_string.c_str(), nullptr, 16));
+        }
+    }
+
+    void BatchSpanProcessor::AddResourceAttributesToMap(zval *php_resource, opentelemetry::sdk::common::AttributeMap &attribute_map) {
+        zval array;
+        zend_call_method_with_0_params(Z_OBJ_P(php_resource), Z_OBJCE_P(php_resource), NULL, "toArray", &array);
+
+        if (Z_TYPE(array) == IS_ARRAY) {
+            // Iterate over the array
+            HashTable *ht = Z_ARRVAL(array);
+            zval *entry;
+            zend_string *key;
+
+            ZEND_HASH_FOREACH_STR_KEY_VAL(ht, key, entry)
+            {
+                if (key) {
+                    std::string cpp_key(ZSTR_VAL(key));
+
+                    // Handle different value types
+                    switch (Z_TYPE_P(entry)) {
+                        case IS_STRING:
+                            attribute_map.SetAttribute(cpp_key,
+                                                       opentelemetry::common::AttributeValue(Z_STRVAL_P(entry)));
+                            break;
+                        case IS_LONG:
+                            attribute_map.SetAttribute(cpp_key, opentelemetry::common::AttributeValue(
+                                    static_cast<int64_t>(Z_LVAL_P(entry))));
+                            break;
+                        case IS_DOUBLE:
+                            attribute_map.SetAttribute(cpp_key, opentelemetry::common::AttributeValue(Z_DVAL_P(entry)));
+                            break;
+                        case IS_TRUE:
+                        case IS_FALSE:
+                            attribute_map.SetAttribute(cpp_key, opentelemetry::common::AttributeValue(
+                                    Z_TYPE_P(entry) == IS_TRUE));
+                            break;
+                        default:
+                            // Handle other types (arrays, objects, etc.) if needed
+                            break;
+                    }
+                }
+            }
+            ZEND_HASH_FOREACH_END();
+
+            // Clean up the array zval
+            zval_ptr_dtor(&array);
         }
     }
 }
