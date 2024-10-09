@@ -7,6 +7,7 @@
 #include "opentelemetry/exporters/ostream/span_exporter_factory.h"
 #include "opentelemetry/exporters/otlp/otlp_http_exporter.h"
 #include "opentelemetry/sdk/instrumentationscope/instrumentation_scope.h"
+#include "opentelemetry/sdk/resource/resource.h"
 #include "opentelemetry/sdk/trace/exporter.h"
 #include "opentelemetry/sdk/trace/processor.h"
 #include "opentelemetry/sdk/trace/recordable.h"
@@ -14,16 +15,19 @@
 #include "opentelemetry/sdk/trace/batch_span_processor_options.h"
 #include "opentelemetry/sdk/trace/simple_processor_factory.h"
 #include "opentelemetry/sdk/trace/tracer_provider_factory.h"
+#include "opentelemetry/common/attribute_value.h"
 #include "opentelemetry/trace/provider.h"
 #include "opentelemetry/trace/span_context.h"
 #include "opentelemetry/trace/trace_flags.h"
 #include "opentelemetry/trace/trace_id.h"
 #include "opentelemetry/trace/span_id.h"
+#include <opentelemetry/common/attribute_value.h>
 #include <opentelemetry/common/timestamp.h>
 #include <chrono>
 
 namespace trace_sdk {
     std::map<std::string, opentelemetry::nostd::unique_ptr<opentelemetry::sdk::instrumentationscope::InstrumentationScope>> BatchSpanProcessor::scope_map;
+    std::shared_ptr<opentelemetry::sdk::resource::Resource> BatchSpanProcessor::cpp_resource = nullptr;
     BatchSpanProcessor::BatchSpanProcessor() {
         //php_printf("(c++)BSP::construct\n");
         std::string otel_exporter = GetEnvVar("OTEL_TRACES_EXPORTER", "otlp");
@@ -68,6 +72,7 @@ namespace trace_sdk {
 
     void BatchSpanProcessor::OnStart(zval *php_span, zval *parent_context) {
         //todo: Context vs SpanContext
+        //php_printf("(c++)BatchSpanProcessor OnStart\n");
     }
 
     void BatchSpanProcessor::OnEnd(zval *php_span) {
@@ -127,9 +132,9 @@ namespace trace_sdk {
         uint8_t trace_id_buf[16] = {0};
         uint8_t span_id_buf[8] = {0};
         uint8_t parent_span_id_buf[8] = {0};
-        memcpy(trace_id_buf, Z_STRVAL(trace_id), std::min(Z_STRLEN(trace_id), static_cast<size_t>(16)));
-        memcpy(span_id_buf, Z_STRVAL(span_id), std::min(Z_STRLEN(span_id), static_cast<size_t>(8)));
-        memcpy(parent_span_id_buf, Z_STRVAL(parent_span_id), std::min(Z_STRLEN(parent_span_id), static_cast<size_t>(8)));
+        hexStringToBytes(std::string(Z_STRVAL(trace_id), Z_STRLEN(trace_id)), trace_id_buf, 16);
+        hexStringToBytes(std::string(Z_STRVAL(span_id), Z_STRLEN(span_id)), span_id_buf, 8);
+        hexStringToBytes(std::string(Z_STRVAL(parent_span_id), Z_STRLEN(parent_span_id)), parent_span_id_buf, 8);
 
         opentelemetry::v1::trace::TraceId cpp_trace_id(trace_id_buf);
         opentelemetry::v1::trace::SpanId cpp_span_id(span_id_buf);
@@ -149,12 +154,12 @@ namespace trace_sdk {
         zval start_time, end_time;
         zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getStartEpochNanos", &start_time);
         assert(Z_TYPE(start_time) == IS_LONG);
-        std::chrono::system_clock::time_point start_time_point = std::chrono::system_clock::time_point(std::chrono::seconds(Z_LVAL(start_time)));
+        std::chrono::system_clock::time_point start_time_point = std::chrono::system_clock::time_point(std::chrono::nanoseconds(Z_LVAL(start_time)));
         recordable->SetStartTime(opentelemetry::v1::common::SystemTimestamp(start_time_point));
 
         zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getEndEpochNanos", &end_time);
         assert(Z_TYPE(end_time) == IS_LONG);
-        std::chrono::system_clock::time_point end_time_point = std::chrono::system_clock::time_point(std::chrono::seconds(Z_LVAL(end_time)));
+        std::chrono::system_clock::time_point end_time_point = std::chrono::system_clock::time_point(std::chrono::nanoseconds(Z_LVAL(end_time)));
         recordable->SetDuration(std::chrono::duration_cast<std::chrono::nanoseconds>(end_time_point - start_time_point));
         zval_ptr_dtor(&start_time);
         zval_ptr_dtor(&end_time);
@@ -189,8 +194,10 @@ namespace trace_sdk {
         zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getName", &scope_name);
         assert(Z_TYPE(scope_name) == IS_STRING);
         zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getVersion", &scope_version);
+        convert_to_string(&scope_version)
         assert(Z_TYPE(scope_version) == IS_STRING);
         zend_call_method_with_0_params(Z_OBJ_P(&scope), scope_ce, NULL, "getSchemaUrl", &scope_schema_url);
+        convert_to_string(&scope_schema_url);
         assert(Z_TYPE(scope_schema_url) == IS_STRING);
 
         std::stringstream ss;
@@ -198,17 +205,71 @@ namespace trace_sdk {
         std::string scope_key = ss.str();
         if (scope_map.find(scope_key) == scope_map.end()) {
             scope_map[scope_key] = opentelemetry::sdk::instrumentationscope::InstrumentationScope::Create(
-                    Z_STRVAL(scope_name),
-                    Z_STRVAL(scope_version),
-                    Z_STRVAL(scope_schema_url)
+                Z_STRVAL(scope_name),
+                Z_STRVAL(scope_version),
+                Z_STRVAL(scope_schema_url)
             );
         }
-
         recordable->SetInstrumentationScope(*scope_map[scope_key]);
         zval_ptr_dtor(&scope);
         zval_ptr_dtor(&scope_name);
         zval_ptr_dtor(&scope_version);
         zval_ptr_dtor(&scope_schema_url);
+
+        // resource
+        if (cpp_resource == nullptr) {
+            zval resource, resource_attributes, resource_schema_url;
+            zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getResource", &resource);
+            assert(Z_TYPE(resource) == IS_OBJECT);
+            zend_call_method_with_0_params(Z_OBJ_P(&resource), Z_OBJCE_P(&resource), NULL, "getAttributes",
+                                           &resource_attributes);
+            assert(Z_TYPE(resource_attributes) == IS_OBJECT);
+            zend_call_method_with_0_params(Z_OBJ_P(&resource), Z_OBJCE_P(&resource), NULL, "getSchemaUrl",
+                                           &resource_schema_url);
+            convert_to_string(&resource_schema_url);
+            assert(Z_TYPE(resource_schema_url) == IS_STRING);
+            std::string rsu_str(Z_STRVAL(resource_schema_url), Z_STRLEN(resource_schema_url));
+
+            opentelemetry::sdk::common::AttributeMap attribute_map;
+            AddResourceAttributesToMap(&resource_attributes, attribute_map);
+            opentelemetry::sdk::resource::Resource custom_resource = opentelemetry::sdk::resource::Resource::Create(attribute_map, rsu_str);
+
+            cpp_resource = std::make_shared<opentelemetry::sdk::resource::Resource>(custom_resource);
+            zval_ptr_dtor(&resource);
+            zval_ptr_dtor(&resource_attributes);
+            zval_ptr_dtor(&resource_schema_url);
+        }
+        recordable->SetResource(*cpp_resource);
+
+        // attributes
+        zval attributes;
+        zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getAttributes", &attributes);
+        assert(zend_is_iterable(&attributes));
+        zval attributes_array;
+        zend_call_method_with_0_params(Z_OBJ_P(&attributes), Z_OBJCE_P(&attributes), NULL, "toArray", &attributes_array);
+        assert(Z_TYPE(attributes_array) == IS_ARRAY);
+        HashTable *ht = Z_ARRVAL(attributes_array);
+        zend_string *key;
+        zval *value;
+        ZEND_HASH_FOREACH_STR_KEY_VAL(ht, key, value) {
+            std::string attr_key(ZSTR_VAL(key));
+            if (Z_TYPE_P(value) == IS_STRING) {
+                std::string attr_value(Z_STRVAL_P(value));
+                recordable->SetAttribute(attr_key, attr_value);
+            } else if (Z_TYPE_P(value) == IS_LONG) {
+                int64_t attr_value = Z_LVAL_P(value);
+                recordable->SetAttribute(attr_key, attr_value);
+            } else if (Z_TYPE_P(value) == IS_DOUBLE) {
+                double attr_value = Z_DVAL_P(value);
+                recordable->SetAttribute(attr_key, attr_value);
+            } else if (Z_TYPE_P(value) == IS_TRUE || Z_TYPE_P(value) == IS_FALSE) {
+                bool attr_value = (Z_TYPE_P(value) == IS_TRUE);
+                recordable->SetAttribute(attr_key, attr_value);
+            }
+        } ZEND_HASH_FOREACH_END();
+
+        zval_ptr_dtor(&attributes_array);
+        zval_ptr_dtor(&attributes);
 
         zval_ptr_dtor(&span_data);
     }
@@ -219,15 +280,69 @@ namespace trace_sdk {
             case 0:
                 return opentelemetry::v1::trace::SpanKind::kInternal;
             case 1:
-                return opentelemetry::v1::trace::SpanKind::kServer;
-            case 2:
                 return opentelemetry::v1::trace::SpanKind::kClient;
+            case 2:
+                return opentelemetry::v1::trace::SpanKind::kServer;
             case 3:
                 return opentelemetry::v1::trace::SpanKind::kProducer;
             case 4:
                 return opentelemetry::v1::trace::SpanKind::kConsumer;
             default:
                 return opentelemetry::v1::trace::SpanKind::kInternal;  // Default to internal if unknown
+        }
+    }
+
+    void BatchSpanProcessor::hexStringToBytes(const std::string &hex_string, uint8_t *out_buffer, size_t buffer_size) {
+        size_t len = hex_string.length();
+        for (size_t i = 0; i < buffer_size && i * 2 < len; ++i) {
+            std::string byte_string = hex_string.substr(i * 2, 2);
+            out_buffer[i] = static_cast<uint8_t>(strtol(byte_string.c_str(), nullptr, 16));
+        }
+    }
+
+    void BatchSpanProcessor::AddResourceAttributesToMap(zval *php_resource, opentelemetry::sdk::common::AttributeMap &attribute_map) {
+        zval array;
+        zend_call_method_with_0_params(Z_OBJ_P(php_resource), Z_OBJCE_P(php_resource), NULL, "toArray", &array);
+
+        if (Z_TYPE(array) == IS_ARRAY) {
+            // Iterate over the array
+            HashTable *ht = Z_ARRVAL(array);
+            zval *entry;
+            zend_string *key;
+
+            ZEND_HASH_FOREACH_STR_KEY_VAL(ht, key, entry)
+            {
+                if (key) {
+                    std::string cpp_key(ZSTR_VAL(key));
+
+                    // Handle different value types
+                    switch (Z_TYPE_P(entry)) {
+                        case IS_STRING:
+                            attribute_map.SetAttribute(cpp_key,
+                                                       opentelemetry::common::AttributeValue(Z_STRVAL_P(entry)));
+                            break;
+                        case IS_LONG:
+                            attribute_map.SetAttribute(cpp_key, opentelemetry::common::AttributeValue(
+                                    static_cast<int64_t>(Z_LVAL_P(entry))));
+                            break;
+                        case IS_DOUBLE:
+                            attribute_map.SetAttribute(cpp_key, opentelemetry::common::AttributeValue(Z_DVAL_P(entry)));
+                            break;
+                        case IS_TRUE:
+                        case IS_FALSE:
+                            attribute_map.SetAttribute(cpp_key, opentelemetry::common::AttributeValue(
+                                    Z_TYPE_P(entry) == IS_TRUE));
+                            break;
+                        default:
+                            // Handle other types (arrays, objects, etc.) if needed
+                            break;
+                    }
+                }
+            }
+            ZEND_HASH_FOREACH_END();
+
+            // Clean up the array zval
+            zval_ptr_dtor(&array);
         }
     }
 }

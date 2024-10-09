@@ -8,7 +8,9 @@ OTEL_TRACES_EXPORTER=console
 <?php
 use OpenTelemetry\API\Trace\SpanContextInterface;
 use OpenTelemetry\API\Trace\TraceStateInterface;
+use OpenTelemetry\SDK\Common\Attribute\AttributesInterface;
 use OpenTelemetry\SDK\Common\Instrumentation\InstrumentationScopeInterface;
+use OpenTelemetry\SDK\Resource\ResourceInfo;
 use OpenTelemetry\SDK\Trace\StatusDataInterface;
 use OpenTelemetry\SDK\Trace\BatchSpanProcessor;
 use OpenTelemetry\SDK\Trace\ReadableSpanInterface;
@@ -54,6 +56,31 @@ $span = new class implements ReadableSpanInterface {
                     public function getName(): string { return 'instrumentation_scope_name'; }
                     public function getVersion(): ?string { return '0.0.1'; }
                     public function getSchemaUrl(): ?string { return 'http://example.com/schema/'; }
+                };
+             }
+             public function getAttributes(): AttributesInterface {
+                return new class implements AttributesInterface, \Traversable {
+                    public function has(string $name): bool { return true; }
+                    public function get(string $name): mixed { return null; }
+                    public function getDroppedAttributesCount(): int { return 0; }
+                    public function toArray(): array {
+                        return [
+                            'foo' => 'foo',
+                            'bar' => 'bar',
+                            'pi' => 3.14159,
+                            'ok' => true,
+                        ];
+                    }
+                };
+             }
+             public function getResource(): ResourceInfo {
+                return new class implements ResourceInfo {
+                    public function getSchemaUrl(): ?string { return 'https://example.com/resource/schema'; }
+                    public function getAttributes(): AttributesInterface {
+                        return new class implements AttributesInterface, \Traversable {
+
+                        };
+                    }
                 };
              }
         };
