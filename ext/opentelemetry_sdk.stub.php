@@ -140,7 +140,7 @@ interface ReadableSpanInterface
 interface ReadWriteSpanInterface extends ReadableSpanInterface {}
 
 interface SpanProcessorInterface {
-    public function onStart(ReadWriteSpanInterface $span, ContextInterface $parentContext): void;
+    public function onStart(ReadWriteSpanInterface $span, \OpenTelemetry\Context\ContextInterface $parentContext): void;
     public function onEnd(ReadableSpanInterface $span): void;
     public function forceFlush(?CancellationInterface $cancellation = null): bool;
     public function shutdown(?CancellationInterface $cancellation = null): bool;
@@ -149,7 +149,7 @@ interface SpanProcessorInterface {
 class BatchSpanProcessor implements SpanProcessorInterface
 {
     public function __construct() {}
-    public function onStart(ReadWriteSpanInterface $span, ContextInterface $parentContext): void {}
+    public function onStart(ReadWriteSpanInterface $span, \OpenTelemetry\Context\ContextInterface $parentContext): void {}
     public function onEnd(ReadableSpanInterface $span): void {}
     public function forceFlush(?CancellationInterface $cancellation = null): bool {}
     public function shutdown(?CancellationInterface $cancellation = null): bool {}
@@ -175,8 +175,8 @@ class SpanContext implements SpanContextInterface
 
 interface SpanInterface
 {
-    public function activate(): ScopeInterface;
-    public function storeInContext(ContextInterface $context): ContextInterface;
+    public function activate(): \OpenTelemetry\Context\ScopeInterface;
+    public function storeInContext(\OpenTelemetry\Context\ContextInterface $context): \OpenTelemetry\Context\ContextInterface;
     public function updateName(string $name): SpanInterface;
     public function setStatus(string $code, ?string $description = null): SpanInterface;
     public function end(?int $endTimestamp = null): void;
@@ -195,10 +195,10 @@ class Span implements SpanInterface
     public function setStatus(string $code, ?string $description = null): SpanInterface {}
     public function end(?int $endTimestamp = null): void {}
     //public function addLink(SpanContextInterface $context, iterable $attribute = []): SpanInterface
-    public function activate(): ScopeInterface {}
+    public function activate(): \OpenTelemetry\Context\ScopeInterface {}
     public function getContext(): SpanContextInterface {}
-    public function storeInContext(ContextInterface $context): ContextInterface;
-    public static function fromContext(ContextInterface $context): SpanInterface;
+    public function storeInContext(\OpenTelemetry\Context\ContextInterface $context): \OpenTelemetry\Context\ContextInterface;
+    public static function fromContext(\OpenTelemetry\Context\ContextInterface $context): SpanInterface;
     //public static function getInvalid(): SpanInterface;
 }
 

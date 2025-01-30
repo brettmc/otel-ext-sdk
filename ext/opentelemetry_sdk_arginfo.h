@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 6d250b62953c53a70f82563d8e04746a854d7436 */
+ * Stub hash: 7a9a07cfefc5a0a01050ef37f03e90d89a154253 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_OpenTelemetry_Context_ScopeInterface_detach, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -100,7 +100,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_SpanProcessorInterface_onStart, 0, 2, IS_VOID, 0)
 	ZEND_ARG_OBJ_INFO(0, span, OpenTelemetry\\SDK\\Trace\\ReadWriteSpanInterface, 0)
-	ZEND_ARG_OBJ_INFO(0, parentContext, OpenTelemetry\\SDK\\Trace\\ContextInterface, 0)
+	ZEND_ARG_OBJ_INFO(0, parentContext, OpenTelemetry\\Context\\ContextInterface, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_SpanProcessorInterface_onEnd, 0, 1, IS_VOID, 0)
@@ -144,11 +144,10 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_OpenTelemetry_SDK_Trace_SpanContext_isSampled arginfo_class_OpenTelemetry_SDK_Trace_SpanContextInterface_isRemote
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_activate, 0, 0, OpenTelemetry\\SDK\\Trace\\ScopeInterface, 0)
-ZEND_END_ARG_INFO()
+#define arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_activate arginfo_class_OpenTelemetry_Context_Context_activate
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_storeInContext, 0, 1, OpenTelemetry\\SDK\\Trace\\ContextInterface, 0)
-	ZEND_ARG_OBJ_INFO(0, context, OpenTelemetry\\SDK\\Trace\\ContextInterface, 0)
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_storeInContext, 0, 1, OpenTelemetry\\Context\\ContextInterface, 0)
+	ZEND_ARG_OBJ_INFO(0, context, OpenTelemetry\\Context\\ContextInterface, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_updateName, 0, 1, OpenTelemetry\\SDK\\Trace\\SpanInterface, 0)
@@ -173,14 +172,14 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_OpenTelemetry_SDK_Trace_Span_end arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_end
 
-#define arginfo_class_OpenTelemetry_SDK_Trace_Span_activate arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_activate
+#define arginfo_class_OpenTelemetry_SDK_Trace_Span_activate arginfo_class_OpenTelemetry_Context_Context_activate
 
 #define arginfo_class_OpenTelemetry_SDK_Trace_Span_getContext arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_getContext
 
 #define arginfo_class_OpenTelemetry_SDK_Trace_Span_storeInContext arginfo_class_OpenTelemetry_SDK_Trace_SpanInterface_storeInContext
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_Span_fromContext, 0, 1, OpenTelemetry\\SDK\\Trace\\SpanInterface, 0)
-	ZEND_ARG_OBJ_INFO(0, context, OpenTelemetry\\SDK\\Trace\\ContextInterface, 0)
+	ZEND_ARG_OBJ_INFO(0, context, OpenTelemetry\\Context\\ContextInterface, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_SDK_Trace_SpanBuilder_setAttribute, 0, 2, OpenTelemetry\\SDK\\Trace\\SpanBuilder, 0)
