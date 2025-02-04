@@ -301,7 +301,7 @@ namespace trace_sdk {
         zval_ptr_dtor(&events);
 
         // links
-        /*zval links;
+        zval links;
         zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getLinks", &links);
         assert(zend_is_iterable(&links));
         // get span context and attributes
@@ -319,8 +319,6 @@ namespace trace_sdk {
             zval_ptr_dtor(&link_span_context);
         } ZEND_HASH_FOREACH_END();
         zval_ptr_dtor(&links);
-        zval_ptr_dtor(link); //@todo segfault here
-        */
 
         zval_ptr_dtor(&span_data);
     }
