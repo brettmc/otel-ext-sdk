@@ -4,43 +4,16 @@
  * @generate-class-entries
  * @undocumentable
  */
+namespace OpenTelemetry\SDK\Resource;
 
-//TODO create an interface in core SDK
-/*interface \OpenTelemetry\SDK\Resource\ResourceInfo
+//todo interface in SDK?
+/*interface ResourceInfo
 {
-
+    public function getSchemaUrl(): ?string;
+    public function getAttributes(): \OpenTelemetry\SDK\Common\Attribute\AttributesInterface;
 }*/
 
 namespace OpenTelemetry\Context;
-
-interface ScopeInterface
-{
-    public function detach(): int;
-}
-
-class Scope implements ScopeInterface
-{
-    public function detach(): int {}
-}
-
-interface ContextKeyInterface
-{
-}
-
-class ContextKey implements ContextKeyInterface
-{
-    public function __construct(private readonly ?string $name = null) {}
-    public function __destruct() {}
-    public function name(): ?string {}
-}
-
-class Context implements ContextInterface
-{
-    public static function getCurrent(): ContextInterface {}
-    public function activate(): ScopeInterface {}
-    public function with(ContextKeyInterface $key, mixed $value): ContextInterface {}
-    public function get(ContextKeyInterface $key): mixed {}
-}
 
 interface ContextInterface
 {
@@ -80,6 +53,14 @@ interface AttributesInterface extends \Traversable, \Countable
     public function toArray(): array;
 }
 
+namespace OpenTelemetry\SDK\Common\Future;
+
+interface CancellationInterface
+{
+    public function subscribe(\Closure $callback): string;
+    public function unsubscribe(string $id): void;
+}
+
 namespace OpenTelemetry\SDK\Common\Instrumentation;
 
 interface InstrumentationScopeInterface
@@ -112,13 +93,13 @@ interface SpanDataInterface
     //public function getParentSpanId(): string;
     public function getStatus(): StatusDataInterface;
     public function getStartEpochNanos(): int;
-    //public function getAttributes(): AttributesInterface;
+    public function getAttributes(): \OpenTelemetry\SDK\Common\Attribute\AttributesInterface;
     //public function getEvents(): array;
     //public function getLinks(): array;
     public function getEndEpochNanos(): int;
     //public function hasEnded(): bool;
     public function getInstrumentationScope(): \OpenTelemetry\SDK\Common\Instrumentation\InstrumentationScopeInterface;
-    //public function getResource(): ResourceInfo;
+    public function getResource(): object; //ResourceInfo;
     //public function getTotalDroppedEvents(): int;
     //public function getTotalDroppedLinks(): int;
 }
@@ -140,99 +121,17 @@ interface ReadableSpanInterface
 interface ReadWriteSpanInterface extends ReadableSpanInterface {}
 
 interface SpanProcessorInterface {
-    public function onStart(ReadWriteSpanInterface $span, ContextInterface $parentContext): void;
+    public function onStart(ReadWriteSpanInterface $span, \OpenTelemetry\Context\ContextInterface $parentContext): void;
     public function onEnd(ReadableSpanInterface $span): void;
-    public function forceFlush(?CancellationInterface $cancellation = null): bool;
-    public function shutdown(?CancellationInterface $cancellation = null): bool;
+    public function forceFlush(?\OpenTelemetry\SDK\Common\Future\CancellationInterface $cancellation = null): bool;
+    public function shutdown(?\OpenTelemetry\SDK\Common\Future\CancellationInterface $cancellation = null): bool;
 }
 
 class BatchSpanProcessor implements SpanProcessorInterface
 {
     public function __construct() {}
-    public function onStart(ReadWriteSpanInterface $span, ContextInterface $parentContext): void {}
+    public function onStart(ReadWriteSpanInterface $span, \OpenTelemetry\Context\ContextInterface $parentContext): void {}
     public function onEnd(ReadableSpanInterface $span): void {}
-    public function forceFlush(?CancellationInterface $cancellation = null): bool {}
-    public function shutdown(?CancellationInterface $cancellation = null): bool {}
-}
-
-interface SpanContextInterface
-{
-    public function getTraceId(): string;
-    public function getSpanId(): string;
-    public function getTraceFlags(): int;
-    public function isRemote(): bool;
-    public function isSampled(): bool;
-}
-
-class SpanContext implements SpanContextInterface
-{
-    public function getTraceId(): string {}
-    public function getSpanId(): string {}
-    public function getTraceFlags(): int {}
-    public function isRemote(): bool {}
-    public function isSampled(): bool {}
-}
-
-interface SpanInterface
-{
-    public function activate(): ScopeInterface;
-    public function storeInContext(ContextInterface $context): ContextInterface;
-    public function updateName(string $name): SpanInterface;
-    public function setStatus(string $code, ?string $description = null): SpanInterface;
-    public function end(?int $endTimestamp = null): void;
-    //public function recordException(Throwable $exception, iterable $attributes = []): SpanInterface;
-    //public function addEvent(string $name, iterable $attributes = [], ?int $timestamp = null): SpanInterface;
-    //public function addLink(SpanContextInterface $context, iterable $attributes = []): SpanInterface;
-    //public function setAttributes(iterable $attributes): SpanInterface;
-    //public function setAttribute(string $key, bool|int|float|string|array|null $value): SpanInterface;
-    //public function isRecording(): bool;
-    public function getContext(): SpanContextInterface;
-}
-
-class Span implements SpanInterface
-{
-    public function updateName(string $name): SpanInterface {}
-    public function setStatus(string $code, ?string $description = null): SpanInterface {}
-    public function end(?int $endTimestamp = null): void {}
-    //public function addLink(SpanContextInterface $context, iterable $attribute = []): SpanInterface
-    public function activate(): ScopeInterface {}
-    public function getContext(): SpanContextInterface {}
-    public function storeInContext(ContextInterface $context): ContextInterface;
-    public static function fromContext(ContextInterface $context): SpanInterface;
-    //public static function getInvalid(): SpanInterface;
-}
-
-class SpanBuilder
-{
-    public function setAttribute(string $key, mixed $value): SpanBuilder {}
-    public function setAttributes(iterable $attributes): SpanBuilder {}
-    public function setSpanKind(int $spanKind): SpanBuilder {}
-    public function setStartTimestamp(int $timestamp): SpanBuilder {}
-    public function setParent(): SpanBuilder {}
-    public function addLink(SpanContextInterface $context, iterable $attributes = []): SpanBuilder {}
-    public function startSpan(): Span {}
-}
-
-class Tracer
-{
-    public function spanBuilder(string $spanName): SpanBuilder {}
-}
-
-interface TracerProviderInterface
-{
-    public function getTracer(string $name): Tracer;
-}
-
-class TracerProvider implements TracerProviderInterface
-{
-    public function __construct() {}
-    public function __destruct() {}
-    public function getTracer(string $name): Tracer {}
-    public function forceFlush(): bool {}
-    public function shutdown(): bool {}
-}
-
-class TracerProviderFactory
-{
-    public function create(): TracerProviderInterface;
+    public function forceFlush(?\OpenTelemetry\SDK\Common\Future\CancellationInterface $cancellation = null): bool {}
+    public function shutdown(?\OpenTelemetry\SDK\Common\Future\CancellationInterface $cancellation = null): bool {}
 }
