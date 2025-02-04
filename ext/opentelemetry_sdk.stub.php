@@ -17,10 +17,10 @@ namespace OpenTelemetry\Context;
 
 interface ContextInterface
 {
-    public static function getCurrent(): ContextInterface;
-    public function activate(): ScopeInterface;
-    public function with(ContextKeyInterface $key, mixed $value): ContextInterface;
-    public function get(ContextKeyInterface $key): mixed;
+    //public static function getCurrent(): ContextInterface;
+    //public function activate(): ScopeInterface;
+    //public function with(ContextKeyInterface $key, mixed $value): ContextInterface;
+    //public function get(ContextKeyInterface $key): mixed;
 }
 
 namespace OpenTelemetry\API\Trace;
@@ -48,7 +48,7 @@ namespace OpenTelemetry\SDK\Common\Attribute;
 interface AttributesInterface extends \Traversable, \Countable
 {
     public function has(string $name): bool;
-    public function get(string $name): mixed; //todo??
+    public function get(string $name): mixed; //todo mixed ?
     public function getDroppedAttributesCount(): int;
     public function toArray(): array;
 }
