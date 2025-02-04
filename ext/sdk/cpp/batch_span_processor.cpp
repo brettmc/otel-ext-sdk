@@ -301,7 +301,7 @@ namespace trace_sdk {
         zval_ptr_dtor(&events);
 
         // links
-        zval links;
+        /*zval links;
         zend_call_method_with_0_params(Z_OBJ_P(&span_data), span_data_ce, NULL, "getLinks", &links);
         assert(zend_is_iterable(&links));
         // get span context and attributes
@@ -315,11 +315,12 @@ namespace trace_sdk {
             //zend_call_method_with_0_params(Z_OBJ_P(link), Z_OBJCE_P(link), NULL, "getAttributes", &link_attributes);
             //assert(Z_TYPE(link_attributes) == IS_OBJECT);
             opentelemetry::v1::trace::SpanContext cpp_link_span_ctx = ConvertPhpSpanContextToSpanContext(link_span_context);
-            recordable->AddLink(cpp_link_span_ctx/*, link_attributes*/);
+            recordable->AddLink(cpp_link_span_ctx); //), link_attributes);
             zval_ptr_dtor(&link_span_context);
         } ZEND_HASH_FOREACH_END();
         zval_ptr_dtor(&links);
-        zval_ptr_dtor(link);
+        zval_ptr_dtor(link); //@todo segfault here
+        */
 
         zval_ptr_dtor(&span_data);
     }
