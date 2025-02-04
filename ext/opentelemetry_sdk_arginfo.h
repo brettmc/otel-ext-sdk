@@ -1,20 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: a987a0d5a0e3e2e4c12496a5cd8cdb8b27b35d38 */
-
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_Context_ContextInterface_getCurrent, 0, 0, OpenTelemetry\\Context\\ContextInterface, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_Context_ContextInterface_activate, 0, 0, OpenTelemetry\\Context\\ScopeInterface, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_OpenTelemetry_Context_ContextInterface_with, 0, 2, OpenTelemetry\\Context\\ContextInterface, 0)
-	ZEND_ARG_OBJ_INFO(0, key, OpenTelemetry\\Context\\ContextKeyInterface, 0)
-	ZEND_ARG_TYPE_INFO(0, value, IS_MIXED, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_OpenTelemetry_Context_ContextInterface_get, 0, 1, IS_MIXED, 0)
-	ZEND_ARG_OBJ_INFO(0, key, OpenTelemetry\\Context\\ContextKeyInterface, 0)
-ZEND_END_ARG_INFO()
+ * Stub hash: 24a0b482c38efb061fd180864b6dbff18193a919 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_OpenTelemetry_API_Trace_TraceStateInterface___toString, 0, 0, IS_STRING, 0)
 ZEND_END_ARG_INFO()
@@ -126,10 +111,6 @@ ZEND_METHOD(OpenTelemetry_SDK_Trace_BatchSpanProcessor, shutdown);
 
 
 static const zend_function_entry class_OpenTelemetry_Context_ContextInterface_methods[] = {
-	ZEND_ABSTRACT_ME_WITH_FLAGS(OpenTelemetry_Context_ContextInterface, getCurrent, arginfo_class_OpenTelemetry_Context_ContextInterface_getCurrent, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_ABSTRACT)
-	ZEND_ABSTRACT_ME_WITH_FLAGS(OpenTelemetry_Context_ContextInterface, activate, arginfo_class_OpenTelemetry_Context_ContextInterface_activate, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
-	ZEND_ABSTRACT_ME_WITH_FLAGS(OpenTelemetry_Context_ContextInterface, with, arginfo_class_OpenTelemetry_Context_ContextInterface_with, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
-	ZEND_ABSTRACT_ME_WITH_FLAGS(OpenTelemetry_Context_ContextInterface, get, arginfo_class_OpenTelemetry_Context_ContextInterface_get, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
 	ZEND_FE_END
 };
 

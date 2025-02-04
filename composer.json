@@ -1,0 +1,14 @@
+{
+  "name": "brettmc/opentelemetry_sdk",
+  "description": "OpenTelemetry SDK",
+  "type": "php-ext",
+  "minimum-stability": "dev",
+  "license": "Apache-2.0",
+  "php-ext": {
+    "extension-name": "opentelemetry_sdk",
+    "build-path": "ext"
+  },
+  "require": {
+    "php": "^8.0"
+  }
+}
