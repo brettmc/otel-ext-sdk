@@ -39,7 +39,7 @@ namespace trace_sdk {
             exporter = std::make_unique<opentelemetry::exporter::otlp::OtlpHttpExporter>();
         } else {
             //console
-            php_printf("(c++)Using OStreamSpanExporter\n");
+            //php_printf("(c++)Using OStreamSpanExporter\n");
             exporter = opentelemetry::exporter::trace::OStreamSpanExporterFactory::Create();
         }
         int max_queue_size = std::stoi(GetEnvVar("OTEL_BSP_MAX_QUEUE_SIZE", "2048"));
@@ -318,6 +318,8 @@ namespace trace_sdk {
             recordable->AddLink(cpp_link_span_ctx/*, link_attributes*/);
             zval_ptr_dtor(&link_span_context);
         } ZEND_HASH_FOREACH_END();
+        zval_ptr_dtor(&links);
+        zval_ptr_dtor(link);
 
         zval_ptr_dtor(&span_data);
     }

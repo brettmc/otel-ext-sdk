@@ -1,5 +1,5 @@
 --TEST--
-Call BatchSpanProcessor::onEnd with a ReadableSpanInterface
+Export a span from PHP via BatchSpanProcessor
 --EXTENSIONS--
 opentelemetry_sdk
 --ENV--
@@ -40,29 +40,29 @@ $tracerProvider->shutdown();
   name          : test-span
   trace_id      : %s
   span_id       : %s
-  tracestate    :
+  tracestate    :%s
   parent_span_id: 0000000000000000
   start         : %d
   duration      : %d
-  description   :
+  description   :%s
   span kind     : Server
   status        : Ok
-  attributes    :
+  attributes    :%s
 	baz: bat
-  events        :
+  events        :%s
 	{
 	  name          : test-event
 	  timestamp     : %d
-	  attributes    :
+	  attributes    :%s
 	}
-  links         :
+  links         :%s
 	{
 	  trace_id      : 2e896fdf56f27218ef7aefe41a56ddb1
 	  span_id       : a7535e6a3bb65fa2
-	  tracestate    :
-	  attributes    :
+	  tracestate    :%s
+	  attributes    :%s
 	}
-  resources     :
+  resources     :%s
 	service.version: 1.0.0+no-version-set
 	telemetry.sdk.language: php
 	host.arch: %s
