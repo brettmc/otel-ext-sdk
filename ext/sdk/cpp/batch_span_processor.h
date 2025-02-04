@@ -22,7 +22,8 @@ namespace trace_sdk {
         static std::map<std::string, opentelemetry::v1::nostd::unique_ptr<opentelemetry::sdk::instrumentationscope::InstrumentationScope>> scope_map;
         static std::shared_ptr<opentelemetry::sdk::resource::Resource> cpp_resource;
         void hexStringToBytes(const std::string &hex_string, uint8_t *out_buffer, size_t buffer_size);
-        void AddResourceAttributesToMap(zval *php_resource, opentelemetry::sdk::common::AttributeMap &attribute_map);
+        void AddAttributesToMap(zval *php_resource, opentelemetry::sdk::common::AttributeMap &attribute_map);
+        opentelemetry::v1::trace::SpanContext ConvertPhpSpanContextToSpanContext(zval &span_context);
     };
 } //namespace trace_sdk
 

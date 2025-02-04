@@ -21,6 +21,12 @@ prototype OpenTelemetry extension SDK using opentelemetry-cpp
 
 - some memory leaks reported
 
+# Demo
+
+```shell
+docker run --rm -it -v $(pwd)/ext/demo:/app composer:latest update
+```
+
 # Benchmark
 
 Using hyperfine to test startup + export:

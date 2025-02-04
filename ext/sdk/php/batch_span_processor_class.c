@@ -57,7 +57,8 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_BatchSpanProcessor, __destruct) {
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_BatchSpanProcessor, onStart) {
-    zval *span, *context;
+    //OnStart is a no-op in the C++ implementation, and also accepts an incorrect argument (SpanContext instead of Context)
+    /*zval *span, *context;
     ZEND_PARSE_PARAMETERS_START(2, 2)
         //Z_PARAM_OBJECT_OF_CLASS(span, readable_span_interface_ce)
         Z_PARAM_OBJECT(span)
@@ -65,7 +66,7 @@ PHP_METHOD(OpenTelemetry_SDK_Trace_BatchSpanProcessor, onStart) {
     ZEND_PARSE_PARAMETERS_END();
 
     php_batch_span_processor_object *intern = Z_BATCH_SPAN_PROCESSOR_OBJ_P(ZEND_THIS);
-    batch_span_processor_on_start(intern->cpp_batch_span_processor, span, context);
+    batch_span_processor_on_start(intern->cpp_batch_span_processor, span, context);*/
 }
 
 PHP_METHOD(OpenTelemetry_SDK_Trace_BatchSpanProcessor, onEnd) {
