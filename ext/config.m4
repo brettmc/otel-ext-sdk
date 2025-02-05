@@ -22,7 +22,7 @@ if test "$PHP_OPENTELEMETRY_SDK" != "no"; then
   dnl Write more examples of tests here...
 
     dnl libopentelemetry
-    PKG_CHECK_MODULES([OPENTELEMETRY], [opentelemetry_api opentelemetry_trace opentelemetry_common opentelemetry_resources opentelemetry_version opentelemetry_exporter_otlp_http opentelemetry_exporter_ostream >= 1.16])
+    PKG_CHECK_MODULES([OPENTELEMETRY], [opentelemetry_api opentelemetry_trace opentelemetry_common opentelemetry_resources opentelemetry_version opentelemetry_exporter_otlp_http opentelemetry_exporter_ostream opentelemetry_exporter_otlp_grpc >= 1.16])
     LDFLAGS="$LDFLAGS $OPENTELEMETRY_LIBS"
 
     dnl libprotobuf
@@ -32,6 +32,10 @@ if test "$PHP_OPENTELEMETRY_SDK" != "no"; then
     dnl libcurl
     PKG_CHECK_MODULES([CURL], [libcurl])
     LDFLAGS="$LDFLAGS $CURL_LIBS"
+
+    dnl libprotobuf
+    PKG_CHECK_MODULES([GRPC], [grpc >= 1.50])
+    LDFLAGS="$LDFLAGS $GRPC_LIBS"
 
     CXXFLAGS="-std=c++17 -g"
     PHP_REQUIRE_CXX()

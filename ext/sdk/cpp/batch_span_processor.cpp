@@ -1,10 +1,15 @@
 #include "batch_span_processor.h"
+extern "C" {
+#include "ext/standard/basic_functions.h"
+#include "ext/spl/spl_exceptions.h"
+}
 #include "php.h"
 #include <string>
 #include <Zend/zend_exceptions.h>
 #include <Zend/zend_interfaces.h>
 #include "../../php_opentelemetry_sdk.h"
 #include "opentelemetry/exporters/ostream/span_exporter_factory.h"
+#include "opentelemetry/exporters/otlp/otlp_grpc_exporter.h"
 #include "opentelemetry/exporters/otlp/otlp_http_exporter.h"
 #include "opentelemetry/sdk/instrumentationscope/instrumentation_scope.h"
 #include "opentelemetry/sdk/resource/resource.h"
@@ -35,12 +40,21 @@ namespace trace_sdk {
             return;
         }
         std::unique_ptr<opentelemetry::sdk::trace::SpanExporter> exporter;
-        if (otel_exporter == "otlp") {
-            exporter = std::make_unique<opentelemetry::exporter::otlp::OtlpHttpExporter>();
-        } else {
-            //console
-            //php_printf("(c++)Using OStreamSpanExporter\n");
+        if (otel_exporter == "console") {
             exporter = opentelemetry::exporter::trace::OStreamSpanExporterFactory::Create();
+        } else if (otel_exporter == "otlp") {
+            std::string otel_protocol = GetEnvVar("OTEL_EXPORTER_OTLP_PROTOCOL", "grpc");
+            if (otel_protocol == "grpc") {
+                exporter = std::make_unique<opentelemetry::exporter::otlp::OtlpGrpcExporter>();
+            } else if (otel_protocol == "http/protobuf") {
+                exporter = std::make_unique<opentelemetry::exporter::otlp::OtlpHttpExporter>();
+            } else {
+                zend_throw_exception(spl_ce_InvalidArgumentException, "Invalid OTEL_EXPORTER_OTLP_PROTOCOL", 0);
+                return;
+            }
+        } else {
+            zend_throw_exception(spl_ce_InvalidArgumentException, "Invalid OTEL_TRACES_EXPORTER", 0);
+            return;
         }
         int max_queue_size = std::stoi(GetEnvVar("OTEL_BSP_MAX_QUEUE_SIZE", "2048"));
         int schedule_delay = std::stoi(GetEnvVar("OTEL_BSP_SCHEDULE_DELAY", "5000")); // milliseconds
@@ -84,11 +98,15 @@ namespace trace_sdk {
     }
 
     std::string BatchSpanProcessor::GetEnvVar(const char* var_name, const std::string& default_value = "") {
-        const char* value = std::getenv(var_name); // Get the environment variable
-        if (value != nullptr) {
-                return std::string(value); // Return the value if it exists
-            }
-        return default_value; // Return the default value if not set
+        size_t len = strlen(var_name);
+        zend_string *value = php_getenv(var_name, len);
+        if (value) {
+            const char* value_str = ZSTR_VAL(value);
+            zend_string_release(value);
+            return std::string(value_str);
+        } else {
+            return default_value;
+        }
     }
 
     void BatchSpanProcessor::ConvertPhpSpanToRecordable(zval *php_span, opentelemetry::sdk::trace::Recordable *recordable) {

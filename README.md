@@ -1,9 +1,18 @@
 # otel-ext-sdk
-prototype OpenTelemetry extension SDK using opentelemetry-cpp
+Prototype OpenTelemetry extension Batch Span Processor using opentelemetry-cpp
+
+# Why?
+
+Implementing a minimal Batch Span Processor, which wraps the opentelemetry-cpp SDK, to compare performance with the native PHP implementation.
+
+- asynchronous exporting of spans (eg spand will export during a PHP `sleep()` call)
+- uses libprotobuf and libgrpc instead of the PHP extensions
+- possibly more performant exporting than native PHP implementation
 
 # Requirements
 
-- libprotobuf + headers 
+- libprotobuf + headers
+- libgrpc + headers
 - libcurl + headers
 - libopentelemetry + headers (see dockerfile)
 - build-essential etc
@@ -19,7 +28,7 @@ prototype OpenTelemetry extension SDK using opentelemetry-cpp
 
 # TODOs
 
-- some memory leaks reported
+- gracefully handle invalid OTEL_BSP_* env var values
 
 # Demo
 

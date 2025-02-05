@@ -1,5 +1,5 @@
 --TEST--
-Export a span from PHP via BatchSpanProcessor
+Export a minimal span from PHP via BatchSpanProcessor
 --EXTENSIONS--
 opentelemetry_sdk
 --ENV--
