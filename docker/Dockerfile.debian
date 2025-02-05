@@ -54,15 +54,22 @@ RUN cd php-${PHP_VERSION} \
 RUN apt-get update -y \
   && apt-get install -y \
     less \
-    libprotobuf-dev protobuf-compiler \
-    libcurl4-openssl-dev curl \
+    libprotobuf-dev \
+    libabsl-dev \
+    protobuf-compiler-grpc \
+    protobuf-compiler \
+    libcurl4-openssl-dev \
+    libgrpc-dev \
+    libgrpc++-dev \
+    libc-ares-dev \
+    curl \
     hyperfine \
     cmake \
     git
 
 RUN cd /tmp \
   && git clone --recurse-submodules -j $(nproc) --depth=1 https://github.com/open-telemetry/opentelemetry-cpp.git \
-  && cd opentelemetry-cpp \
+  && cd /tmp/opentelemetry-cpp \
   && mkdir build \
   && cd build \
   && cmake \
@@ -71,9 +78,9 @@ RUN cd /tmp \
     -DWITH_ZIPKIN=OFF \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DBUILD_TESTING=OFF \
-    -DWITH_OTLP_GRPC=OFF \
+    -DWITH_OTLP_GRPC=ON \
     -DWITH_OTLP_HTTP=ON \
-    -DWITH_ABSEIL=OFF \
+    -DWITH_ABSEIL=ON \
     -DBUILD_SHARED_LIBS=ON \
     .. \
   && cmake --build . -j $(nproc) --target install \

@@ -1,0 +1,14 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: OpenTelemetry SDK - otlp/gRPC exporter
+Description: OpenTelemetry otlp/gRPC exporter
+Version: 1.16.1
+
+Libs: -L${libdir} -lopentelemetry_exporter_otlp_grpc -lopentelemetry_exporter_otlp_grpc_client
+Cflags: -I${includedir} 
