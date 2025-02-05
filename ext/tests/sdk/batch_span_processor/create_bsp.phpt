@@ -4,7 +4,7 @@ Create a BatchSpanProcessor
 opentelemetry_sdk
 --FILE--
 <?php
-use OpenTelemetry\SDK\Trace\BatchSpanProcessor;
+use OpenTelemetry\Ext\SDK\Trace\BatchSpanProcessor;
 
 $bsp = new BatchSpanProcessor();
 var_dump($bsp);
@@ -13,7 +13,7 @@ var_dump($bsp->shutdown());
 unset($bsp);
 ?>
 --EXPECT--
-object(OpenTelemetry\SDK\Trace\BatchSpanProcessor)#1 (0) {
+object(OpenTelemetry\Ext\SDK\Trace\BatchSpanProcessor)#1 (0) {
 }
 bool(true)
 bool(true)

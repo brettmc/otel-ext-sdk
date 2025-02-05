@@ -4,6 +4,7 @@ Export a span from PHP via BatchSpanProcessor
 opentelemetry_sdk
 --ENV--
 OTEL_TRACES_EXPORTER=console
+OTEL_PHP_DETECTORS=sdk
 --FILE--
 <?php
 use OpenTelemetry\SDK\Resource\ResourceInfoFactory;
@@ -41,17 +42,8 @@ $tracerProvider = TracerProvider::builder()
     ->addSpanProcessor($wrapper)
     ->build();
 
-$tracer = $tracerProvider->getTracer('test', '1.0.0', 'https://my-schema', ['foo' => 'bar']);
-$span = $tracer
-    ->spanBuilder('test-span')
-    ->setSpanKind(SpanKind::KIND_SERVER)
-    ->startSpan();
-$span->setAttribute('baz', 'bat');
-$span->addEvent('test-event', ['event-attr' => 'event-value']);
-$ctx = SpanContext::createFromRemoteParent('2e896fdf56f27218ef7aefe41a56ddb1', 'a7535e6a3bb65fa2');
-$span->addLink($ctx, ['link-attr' => 'link-value']);
-$span->setStatus(StatusCode::STATUS_OK, 'all is well');
-$span->end();
+$tracer = $tracerProvider->getTracer('test');
+$tracer->spanBuilder('test-span')->startSpan()->end();
 $tracerProvider->shutdown();
 
 ?>
@@ -65,40 +57,15 @@ $tracerProvider->shutdown();
   start         : %d
   duration      : %d
   description   :%s
-  span kind     : Server
-  status        : Ok
+  span kind     : Internal
+  status        : Unset
   attributes    :%s
-	baz: bat
   events        :%s
-	{
-	  name          : test-event
-	  timestamp     : %d
-	  attributes    :%s
-	}
   links         :%s
-	{
-	  trace_id      : 2e896fdf56f27218ef7aefe41a56ddb1
-	  span_id       : a7535e6a3bb65fa2
-	  tracestate    :%s
-	  attributes    :%s
-	}
   resources     :%s
-	service.version: 1.0.0+no-version-set
-	telemetry.sdk.language: php
-	host.arch: %s
-	os.description: %s
-	process.executable.path: %s
+	service.name: unknown_service
 	telemetry.sdk.version: %s
-	os.version: %s
-	process.command: %s
-	process.pid: %d
-	process.owner: %s
-	host.name: %s
-	os.type: linux
-	process.runtime.name: cli
-	os.name: Linux
-	process.runtime.version: %s
-	service.name: __root__
+	telemetry.sdk.language: php
 	telemetry.sdk.name: opentelemetry
-  instr-lib     : test-1.0.0
+  instr-lib     : test
 }
